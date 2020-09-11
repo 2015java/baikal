@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/baikal.iml" filepath="$PROJECT_DIR$/.idea/baikal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-client/baikal-client.iml" filepath="$PROJECT_DIR$/baikal-client/baikal-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-common/baikal-common.iml" filepath="$PROJECT_DIR$/baikal-common/baikal-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-core/baikal-core.iml" filepath="$PROJECT_DIR$/baikal-core/baikal-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-dao/baikal-dao.iml" filepath="$PROJECT_DIR$/baikal-dao/baikal-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-node-common/baikal-node-common.iml" filepath="$PROJECT_DIR$/baikal-node-common/baikal-node-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-node-redis/baikal-node-redis.iml" filepath="$PROJECT_DIR$/baikal-node-redis/baikal-node-redis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-server/baikal-server.iml" filepath="$PROJECT_DIR$/baikal-server/baikal-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-test/baikal-test.iml" filepath="$PROJECT_DIR$/baikal-test/baikal-test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/baikal-web/baikal-web.iml" filepath="$PROJECT_DIR$/baikal-web/baikal-web.iml" />
+    </modules>
+  </component>
+</project>

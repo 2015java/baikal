@@ -1,0 +1,22 @@
+server:
+  port: 8082
+
+spring:
+  profiles:
+    active: dev
+
+baikal:
+  init:
+    reply:
+      timeout: 10000
+  app: 1
+  rabbit:
+    port: 5672
+    host: rabbithost
+    username: username
+    password: password
+test:
+  value: 123
+
+
+

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="baikal-common" />
+        <module name="baikal-core" />
+        <module name="baikal-test" />
+        <module name="baikal-node-common" />
+        <module name="baikal-server" />
+        <module name="baikal-client" />
+        <module name="baikal-web" />
+        <module name="baikal-dao" />
+        <module name="baikal-node-redis" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="baikal" target="1.8" />
+      <module name="baikal-client" target="1.8" />
+      <module name="baikal-common" target="1.8" />
+      <module name="baikal-core" target="1.8" />
+      <module name="baikal-dao" target="1.8" />
+      <module name="baikal-node-common" target="1.8" />
+      <module name="baikal-node-redis" target="1.8" />
+      <module name="baikal-server" target="1.8" />
+      <module name="baikal-test" target="1.8" />
+      <module name="baikal-web" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="baikal-client" options="-parameters" />
+      <module name="baikal-common" options="-parameters" />
+      <module name="baikal-core" options="-parameters" />
+      <module name="baikal-dao" options="-parameters" />
+      <module name="baikal-node-common" options="-parameters" />
+      <module name="baikal-node-redis" options="-parameters" />
+      <module name="baikal-server" options="-parameters" />
+      <module name="baikal-test" options="-parameters" />
+      <module name="baikal-web" options="-parameters" />
+    </option>
+  </component>
+</project>

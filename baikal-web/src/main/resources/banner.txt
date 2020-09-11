@@ -1,0 +1,8 @@
+${AnsiColor.BLUE}
+ __
+|__)  /\  | |__/  /\  |
+|__) /~~\ | |  \ /~~\ |___
+
+${AnsiColor.BRIGHT_RED}
+Application Version: ${application.version}${application.formatted-version}
+Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
