@@ -22,6 +22,10 @@ public final class BaikalPack {
    */
   private String scene;
   /**
+   * 直接将confId作为root发起调用
+   */
+  private long confId;
+  /**
    * 游荡字段
    * 进入baikal的字段是不带G-的
    * 带G-的是业务生成字段
@@ -45,6 +49,12 @@ public final class BaikalPack {
    * 优先级 如果为0则以执行的handler的优先级为准
    */
   private long priority;
+
+  /**
+   * 1.handler 最终以debug|handler.debug展示
+   * 2.confRoot 最终以this.debug展示
+   */
+  private byte debug;
 
   public BaikalPack newPack(BaikalRoam roam) {
     BaikalPack pack = new BaikalPack(traceId, requestTime);
