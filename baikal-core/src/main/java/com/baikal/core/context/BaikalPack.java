@@ -44,7 +44,7 @@ public final class BaikalPack {
   /**
    * 优先级 如果为0则以执行的handler的优先级为准
    */
-  private int priority;
+  private long priority;
 
   public BaikalPack newPack(BaikalRoam roam) {
     BaikalPack pack = new BaikalPack(traceId, requestTime);

@@ -665,7 +665,7 @@ public class BaikalEditServiceImpl implements BaikalEditService {
     base.setStart(vo.getStart());
     base.setEnd(vo.getEnd());
     base.setStatus(vo.getStatus());
-    base.setPriority(1);
+    base.setPriority(1L);
     base.setUpdateAt(new Date());
     return base;
   }

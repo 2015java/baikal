@@ -100,7 +100,7 @@ public class BaikalBase {
      *
      * @mbg.generated
      */
-    private Integer priority;
+    private Long priority;
 
     /**
      *
@@ -478,7 +478,7 @@ public class BaikalBase {
      *
      * @mbg.generated
      */
-    public Integer getPriority() {
+    public Long getPriority() {
         return priority;
     }
 
@@ -488,7 +488,7 @@ public class BaikalBase {
      *
      * @mbg.generated
      */
-    public BaikalBase withPriority(Integer priority) {
+    public BaikalBase withPriority(Long priority) {
         this.setPriority(priority);
         return this;
     }
@@ -501,7 +501,7 @@ public class BaikalBase {
      *
      * @mbg.generated
      */
-    public void setPriority(Integer priority) {
+    public void setPriority(Long priority) {
         this.priority = priority;
     }
 

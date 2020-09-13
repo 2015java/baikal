@@ -24,5 +24,5 @@ public final class BaikalBaseDto {
 
   private Byte debug;
 
-  private Integer priority;
+  private Long priority;
 }

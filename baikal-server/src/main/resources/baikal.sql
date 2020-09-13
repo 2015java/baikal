@@ -34,7 +34,7 @@ CREATE TABLE `tb_baikal_base` (
   `start` datetime(3) DEFAULT NULL COMMENT '开始时间',
   `end` datetime(3) DEFAULT NULL COMMENT '结束时间',
   `debug` tinyint(4) NOT NULL DEFAULT '1',
-  `priority` int(11) NOT NULL DEFAULT '1' COMMENT '优先级(越小越优先)',
+  `priority` bigint(20) NOT NULL DEFAULT '1' COMMENT '优先级',
   `create_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_at` datetime(3) NOT NULL,
   PRIMARY KEY (`id`)
