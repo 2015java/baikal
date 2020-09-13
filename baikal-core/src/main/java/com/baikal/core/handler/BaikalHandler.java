@@ -56,7 +56,7 @@ public final class BaikalHandler {
 
   public void handle(BaikalContext cxt) {
     if (DebugEnum.filter(DebugEnum.IN_PACK, debug)) {
-      log.info("handle in pack:{}", JSON.toJSONString(cxt.getPack()));
+      log.info("handle id:{} in pack:{}", this.baikalId, JSON.toJSONString(cxt.getPack()));
     }
     if (!BaikalTimeUtils.timeCheck(timeTypeEnum, cxt.getPack().getRequestTime(), start, end)) {
       return;
@@ -65,31 +65,31 @@ public final class BaikalHandler {
       if (root != null) {
         root.process(cxt);
         if (DebugEnum.filter(DebugEnum.PROCESS, debug)) {
-          log.info("handle process:{}", JSON.toJSONString(cxt.getProcessInfo()));
+          log.info("handle id:{} process:{}", this.baikalId, cxt.getProcessInfo().toString());
         }
         if (DebugEnum.filter(DebugEnum.OUT_PACK, debug)) {
-          log.info("handle out pack:{}", JSON.toJSONString(cxt.getPack()));
+          log.info("handle id:{} out pack:{}", this.baikalId, JSON.toJSONString(cxt.getPack()));
         } else {
           if (DebugEnum.filter(DebugEnum.OUT_ROAM, debug)) {
-            log.info("handle out roam:{}", JSON.toJSONString(cxt.getPack().getRoam()));
+            log.info("handle id:{} out roam:{}", this.baikalId, JSON.toJSONString(cxt.getPack().getRoam()));
           }
         }
       } else {
-        log.error("root not exsit please check!");
+        log.error("root not exist please check! baikalId:{}", this.baikalId);
       }
     } catch (NodeException ne) {
-      log.error("error ocur in node baikalId:{} cxt:{}", baikalId, JSON.toJSONString(cxt), ne);
+      log.error("error occur in node baikalId:{} node:{} cxt:{}", this.baikalId, cxt.getCurrentId(), JSON.toJSONString(cxt), ne);
     } catch (Exception e) {
-      log.error("error ocur baikalId:{} cxt:{}", baikalId, JSON.toJSONString(cxt), e);
+      log.error("error occur baikalId:{} node:{} cxt:{}", this.baikalId, cxt.getCurrentId(), JSON.toJSONString(cxt), e);
     }
   }
 
   public Long getBaikalId() {
-    return baikalId;
+    return this.baikalId;
   }
 
   public long findBaikalId(){
-    return baikalId;
+    return this.baikalId;
   }
 
   /**

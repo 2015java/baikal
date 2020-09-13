@@ -61,14 +61,14 @@ public final class BaikalTimeUtils {
             dateTime.getHour());
       case DAYS:
         return String.format("%4d%02d%02d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth());
-      case DAYS_LINE:
-        return String.format("%4d-%02d-%02d", dateTime.getYear(), dateTime.getMonthValue(), dateTime.getDayOfMonth());
       case WEEKS:
         dateTime = dateTime.with(DayOfWeek.MONDAY);
         TemporalField weekBasedYear = WeekFields.of(DayOfWeek.MONDAY, 7).weekOfWeekBasedYear();
         return String.format("%4d%02d", dateTime.getYear(), dateTime.get(weekBasedYear));
       case MONTH:
         return String.format("%4d%02d", dateTime.getYear(), dateTime.getMonthValue());
+      case YEAR:
+        return String.format("%4d", dateTime.getYear());
       default:
         return null;
     }
@@ -76,6 +76,7 @@ public final class BaikalTimeUtils {
 
   /**
    * 时间戳校验
+   * 闭区间
    *
    * @param requestTime
    * @return

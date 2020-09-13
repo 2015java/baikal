@@ -35,12 +35,12 @@ public enum TimeSuffixEnum {
   /**
    * 月
    */
-  MONTH((byte) 8),
+  MONTH((byte) 7),
 
   /**
-   * 天 以-隔开
+   * 年
    */
-  DAYS_LINE((byte) 7);
+  YEAR((byte) 8);
 
   private final byte type;
 
