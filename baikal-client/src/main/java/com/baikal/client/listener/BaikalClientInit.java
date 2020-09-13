@@ -41,16 +41,14 @@ public final class BaikalClientInit implements InitializingBean {
     log.info("baikal client init baikalStart");
 
     Object obj = baikalRabbitTemplate.convertSendAndReceive(Constant.getInitExchange(), "", String.valueOf(app));
-    if (obj != null) {
-      String json = (String) obj;
-      if (!StringUtils.isEmpty(json)) {
-        BaikalTransferDto infoDto = JSON.parseObject(json, BaikalTransferDto.class);
-        log.info("baikal client init content:{}", JSON.toJSONString(infoDto));
-        BaikalUpdate.update(infoDto);
-        log.info("baikal client init baikalEnd success");
-        BaikalUpdateListener.initEnd(infoDto.getVersion());
-        return;
-      }
+    String json = (String) obj;
+    if (!StringUtils.isEmpty(json)) {
+      BaikalTransferDto infoDto = JSON.parseObject(json, BaikalTransferDto.class);
+      log.info("baikal client init content:{}", JSON.toJSONString(infoDto));
+      BaikalUpdate.update(infoDto);
+      log.info("baikal client init baikalEnd success");
+      BaikalUpdateListener.initEnd(infoDto.getVersion());
+      return;
     }
     throw new BaikalException("baikal init error maybe server is down app:" + app);
   }

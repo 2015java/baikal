@@ -14,14 +14,14 @@ import org.springframework.util.CollectionUtils;
 public final class BaikalUpdate {
 
   public static void update(BaikalTransferDto info) {
-    /**优先conf*/
+    /*优先conf*/
     if (!CollectionUtils.isEmpty(info.getDeleteConfIds())) {
       BaikalConfCache.delete(info.getDeleteConfIds());
     }
     if (!CollectionUtils.isEmpty(info.getInsertOrUpdateConfs())) {
       BaikalConfCache.insertOrUpdate(info.getInsertOrUpdateConfs());
     }
-    /**其次handler*/
+    /*其次handler*/
     if (!CollectionUtils.isEmpty(info.getDeleteBaseIds())) {
       BaikalHandlerCache.delete(info.getDeleteBaseIds());
     }

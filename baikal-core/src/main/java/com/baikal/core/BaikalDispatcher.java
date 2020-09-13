@@ -27,7 +27,7 @@ public final class BaikalDispatcher {
     if (!checkPack(pack)) {
       return Collections.emptyList();
     }
-    /**优先ID*/
+    /*优先ID*/
     if (pack.getBaikalId() > 0) {
       BaikalHandler handler = BaikalHandlerCache.getHandlerById(pack.getBaikalId());
       if (handler == null) {
@@ -38,7 +38,7 @@ public final class BaikalDispatcher {
       handler.handle(cxt);
       return Collections.singletonList(cxt);
     }
-    /**其次是按scene区分的一组*/
+    /*其次是按scene区分的一组*/
     Map<Long, BaikalHandler> handlerMap = BaikalHandlerCache.getHandlersByScene(pack.getScene());
     if (handlerMap == null || handlerMap.isEmpty()) {
       log.debug("handlers maybe all expired scene:{}", pack.getScene());
@@ -47,14 +47,14 @@ public final class BaikalDispatcher {
 
     List<BaikalContext> cxtList = new LinkedList<>();
     if(handlerMap.size() == 1){
-      /**处理的handler只有一个 直接处理*/
+      /*处理的handler只有一个 直接处理*/
       BaikalHandler handler= handlerMap.values().iterator().next();
       BaikalContext cxt = new BaikalContext(handler.findBaikalId(), pack);
       handler.handle(cxt);
       cxtList.add(cxt);
       return cxtList;
     }
-    /**处理的handler有多个 保障roam不冲突(注意浅拷贝影响)*/
+    /*处理的handler有多个 保障roam不冲突(注意浅拷贝影响)*/
     BaikalRoam roam = pack.getRoam();
     for (BaikalHandler handler : handlerMap.values()) {
       BaikalContext cxt = new BaikalContext(handler.findBaikalId(), pack.newPack(roam));
@@ -68,7 +68,7 @@ public final class BaikalDispatcher {
     if (!checkPack(pack)) {
       return ;
     }
-    /**优先ID*/
+    /*优先ID*/
     if (pack.getBaikalId() > 0) {
       BaikalHandler handler = BaikalHandlerCache.getHandlerById(pack.getBaikalId());
       if (handler == null) {
@@ -79,7 +79,7 @@ public final class BaikalDispatcher {
       handler.handle(cxt);
       return ;
     }
-    /**其次是按scene区分的一组*/
+    /*其次是按scene区分的一组*/
     Map<Long, BaikalHandler> handlerMap = BaikalHandlerCache.getHandlersByScene(pack.getScene());
     if (handlerMap == null || handlerMap.isEmpty()) {
       log.debug("handlers maybe all expired scene:{}", pack.getScene());
@@ -87,13 +87,13 @@ public final class BaikalDispatcher {
     }
 
     if(handlerMap.size() == 1){
-      /**处理的handler只有一个 直接处理*/
+      /*处理的handler只有一个 直接处理*/
       BaikalHandler handler = handlerMap.values().iterator().next();
       BaikalContext cxt = new BaikalContext(handler.findBaikalId(), pack);
       handler.handle(cxt);
       return ;
     }
-    /**处理的handler有多个 保障roam不冲突(注意浅拷贝影响)*/
+    /*处理的handler有多个 保障roam不冲突(注意浅拷贝影响)*/
     BaikalRoam roam = pack.getRoam();
     for (BaikalHandler handler : handlerMap.values()) {
       BaikalContext cxt = new BaikalContext(handler.findBaikalId(), pack.newPack(roam));

@@ -136,9 +136,9 @@ public class BaikalShowConfListener implements MessageListener {
       }
       BaseNode foward = relation.getBaikalForward();
       if(foward != null) {
-        Map fowardMap = assembleNode(foward);
-        if(fowardMap != null) {
-          map.put("baikalForward", fowardMap);
+        Map forwardMap = assembleNode(foward);
+        if(forwardMap != null) {
+          map.put("baikalForward", forwardMap);
         }
       }
       map.put("baikalNodeId", relation.getBaikalNodeId());

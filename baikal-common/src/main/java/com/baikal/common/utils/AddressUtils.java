@@ -39,7 +39,7 @@ public final class AddressUtils {
       objectNames = null;
     }
     String port = "";
-    if (objectNames != null || !objectNames.isEmpty()) {
+    if (objectNames != null && !objectNames.isEmpty()) {
       for (ObjectName objectName : objectNames) {
         port = objectName.getKeyProperty("port");
         if (port != null && !port.isEmpty()) {
@@ -69,7 +69,7 @@ public final class AddressUtils {
     Set<ObjectName> objectNames = beanServer
         .queryNames(new ObjectName("*:type=Connector,*"), Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
     String port = "-1";
-    if (objectNames != null || !objectNames.isEmpty()) {
+    if (objectNames != null && !objectNames.isEmpty()) {
       for (ObjectName objectName : objectNames) {
         port = objectName.getKeyProperty("port");
         if (port != null && !port.isEmpty()) {
@@ -77,6 +77,6 @@ public final class AddressUtils {
         }
       }
     }
-    return Integer.parseInt(port);
+    return port == null ? -1 : Integer.parseInt(port);
   }
 }

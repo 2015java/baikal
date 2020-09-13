@@ -119,7 +119,7 @@ public final class UUIDUtils {
         mask = (1 << 8 * bt1) - 1;
         bt2 -= 3 - bt1;
       } else {
-        mask = (1 << 8 * ((bt2 > 3) ? 3 : bt2)) - 1;
+        mask = (1 << 8 * (Math.min(bt2, 3))) - 1;
         bt2 -= 3;
       }
       int tmp = 0;

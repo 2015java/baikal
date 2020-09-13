@@ -42,7 +42,7 @@ public class BaikalSpringBeanFactory implements BaikalBeanUtils.BaikalBeanFactor
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) {
     this.beanFactory = applicationContext.getAutowireCapableBeanFactory();
-    /**将初始化完的beanFactory塞入BaikalBeanUtils*/
+    /*将初始化完的beanFactory塞入BaikalBeanUtils*/
     BaikalBeanUtils.setFactory(this);
   }
 }

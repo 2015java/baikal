@@ -51,7 +51,7 @@ public final class BaikalPack {
     pack.setBaikalId(baikalId);
     pack.setScene(scene);
     if(roam != null) {
-      /**此处没有用深拷贝*/
+      /*此处没有用深拷贝*/
       pack.setRoam(new BaikalRoam(roam));
     }
     pack.setType(type);
@@ -66,7 +66,7 @@ public final class BaikalPack {
 
   public BaikalPack(String traceId, long requestTime) {
     if (traceId == null || traceId.isEmpty()) {
-      /**traceId为空时,生成traceId*/
+      /*traceId为空时,生成traceId*/
       this.setTraceId(UUIDUtils.generateMost22UUID());
     } else {
       this.traceId = traceId;
@@ -79,7 +79,7 @@ public final class BaikalPack {
   }
 
   public BaikalPack(long requestTime) {
-    /**traceId为空时,生成traceId*/
+    /*traceId为空时,生成traceId*/
     this.setTraceId(UUIDUtils.generateMost22UUID());
     if (requestTime <= 0) {
       this.requestTime = System.currentTimeMillis();
@@ -90,7 +90,7 @@ public final class BaikalPack {
 
   public BaikalPack(String traceId) {
     if (traceId == null || traceId.isEmpty()) {
-      /**traceId为空时,生成traceId*/
+      /*traceId为空时,生成traceId*/
       this.setTraceId(UUIDUtils.generateMost22UUID());
     } else {
       this.traceId = traceId;

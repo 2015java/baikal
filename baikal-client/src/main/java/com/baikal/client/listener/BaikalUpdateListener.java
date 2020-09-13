@@ -46,13 +46,13 @@ public final class BaikalUpdateListener implements MessageListener {
     String json = new String(message.getBody());
     BaikalTransferDto baikalInfo = JSON.parseObject(json, BaikalTransferDto.class);
     if (baikalInfo.getVersion() > initVersion) {
-      /**一旦后面有出现比initVersion大的version 将initVersion置为-1 防止server端重启导致version从0开始*/
+      /*一旦后面有出现比initVersion大的version 将initVersion置为-1 防止server端重启导致version从0开始*/
       log.info("baikal listener update wait msg baikalStart baikalInfo:{}", json);
       BaikalUpdate.update(baikalInfo);
       log.info("baikal listener update wait msg baikalEnd success");
       return;
     }
-    log.info("baikal listener msg version low then initversion:{}, msg:{}", initVersion, JSON.toJSONString(baikalInfo));
+    log.info("baikal listener msg version low then init version:{}, msg:{}", initVersion, JSON.toJSONString(baikalInfo));
   }
 
   private void handleMessage(Message message) {

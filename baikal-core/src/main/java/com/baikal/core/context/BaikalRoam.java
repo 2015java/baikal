@@ -41,7 +41,7 @@ public final class BaikalRoam extends HashMap<String, Object> {
     }
     String[] keys = multiKey.split("\\.");
     if (keys.length == 1) {
-      /**只有一个*/
+      /*只有一个*/
       return (T) put(keys[0], value);
     }
     Map<String, Object> endMap = this;
@@ -78,7 +78,7 @@ public final class BaikalRoam extends HashMap<String, Object> {
     }
     String[] keys = multiKey.split("\\.");
     if (keys.length == 1) {
-      /**只有一个*/
+      /*只有一个*/
       return (T) get(keys[0]);
     }
     Map<String, Object> endMap = this;

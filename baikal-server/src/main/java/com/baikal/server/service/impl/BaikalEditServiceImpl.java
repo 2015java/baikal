@@ -80,21 +80,21 @@ public class BaikalEditServiceImpl implements BaikalEditService {
       return result;
     }
     if (baseVo.getId() == null) {
-      /**新增*/
-      /**新增的需要在conf里新建一个root root默认是none的status=0*/
+      /*新增*/
+      /*新增的需要在conf里新建一个root root默认是none的status=0*/
       BaikalConf createConf = new BaikalConf();
       createConf.setApp(baseVo.getApp());
       createConf.setType(NodeTypeEnum.NONE.getType());
       createConf.setUpdateAt(new Date());
       confMapper.insertSelective(createConf);
       BaikalBase createBase = convert(baseVo);
-      /**存入负值表示新建*/
+      /*存入负值表示新建*/
       createBase.setConfId(-createConf.getId());
       createBase.setUpdateAt(new Date());
       baseMapper.insertSelective(createBase);
       return result;
     }
-    /**编辑*/
+    /*编辑*/
     BaikalBaseExample example = new BaikalBaseExample();
     example.createCriteria().andIdEqualTo(baseVo.getId());
     baseMapper.updateByExample(convert(baseVo), example);
@@ -117,9 +117,9 @@ public class BaikalEditServiceImpl implements BaikalEditService {
 
     switch (type) {
       case 1:
-        /**新建*/
+        /*新建*/
         if (confVo.getOperateNodeId() == null) {
-          /**新建根节点*/
+          /*新建根节点*/
           BaikalBaseExample baseExample = new BaikalBaseExample();
           baseExample.createCriteria().andAppEqualTo(app).andIdEqualTo(baikalId);
           List<BaikalBase> baseList = baseMapper.selectByExample(baseExample);
@@ -153,7 +153,7 @@ public class BaikalEditServiceImpl implements BaikalEditService {
           if (!CollectionUtils.isEmpty(confList)) {
             BaikalConf operateConf = confList.get(0);
             if (confVo.getNodeId() != null) {
-              /**从已知节点ID添加*/
+              /*从已知节点ID添加*/
               operateConf.setSonIds(StringUtils.isEmpty(operateConf.getSonIds()) ?
                       String.valueOf(confVo.getNodeId()) :
                       operateConf.getSonIds() + "," + confVo.getNodeId());
@@ -237,7 +237,7 @@ public class BaikalEditServiceImpl implements BaikalEditService {
             List<BaikalConf> confList = confMapper.selectByExample(confExample);
             if (!CollectionUtils.isEmpty(confList)) {
               BaikalConf operateConf = confList.get(0);
-              /**多校验一步*/
+              /*多校验一步*/
               if (operateConf.getForwardId() != null && operateConf.getForwardId().equals(confVo.getOperateNodeId())) {
                 operateConf.setForwardId(null);
                 operateConf.setUpdateAt(new Date());
@@ -245,14 +245,14 @@ public class BaikalEditServiceImpl implements BaikalEditService {
               }
             }
           } else {
-            /**该节点没有父节点和next 判断为根节点 根节点删除直接将base表中confId变成负数,避免只是为了改变根节点类型而直接全部删除重做*/
+            /*该节点没有父节点和next 判断为根节点 根节点删除直接将base表中confId变成负数,避免只是为了改变根节点类型而直接全部删除重做*/
             BaikalBaseExample baseExample = new BaikalBaseExample();
             baseExample.createCriteria().andAppEqualTo(app).andIdEqualTo(baikalId);
             List<BaikalBase> baseList = baseMapper.selectByExample(baseExample);
             if (!CollectionUtils.isEmpty(baseList)) {
               BaikalBase base = baseList.get(0);
               if (base.getConfId().equals(confVo.getOperateNodeId())) {
-                /**校验相等再变更*/
+                /*校验相等再变更*/
                 base.setConfId(-confVo.getOperateNodeId());
                 base.setUpdateAt(new Date());
                 baseMapper.updateByExampleSelective(base, baseExample);
@@ -269,7 +269,7 @@ public class BaikalEditServiceImpl implements BaikalEditService {
           if (!CollectionUtils.isEmpty(confList)) {
             BaikalConf operateConf = confList.get(0);
             if (confVo.getNodeId() != null) {
-              /**从已知节点ID添加*/
+              /*从已知节点ID添加*/
               operateConf.setForwardId(confVo.getNodeId());
             } else {
               BaikalConf createConf = new BaikalConf();

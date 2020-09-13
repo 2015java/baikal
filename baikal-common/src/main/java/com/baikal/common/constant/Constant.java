@@ -40,7 +40,7 @@ public final class Constant {
   }
 
   public static String genUpdateTmpQueue() {
-    /***"baikal.tmp.queue-" + host + ":" + port*/
+    /*"baikal.tmp.queue-" + host + ":" + port*/
     return "baikal.tmp.queue-" + AddressUtils.getAddressPort();
   }
 }

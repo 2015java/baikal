@@ -27,15 +27,15 @@ public final class BaikalHandlerCache {
   /**
    * key baikalId value handler
    */
-  private static Map<Long, BaikalHandler> idHandlerMap = new ConcurrentHashMap<>();
+  private static final Map<Long, BaikalHandler> idHandlerMap = new ConcurrentHashMap<>();
   /**
    * key1 scene key2 baikalId
    */
-  private static Map<String, Map<Long, BaikalHandler>> sceneHandlersMap = new ConcurrentHashMap<>();
+  private static final Map<String, Map<Long, BaikalHandler>> sceneHandlersMap = new ConcurrentHashMap<>();
   /**
    * key1 confId key2 baikalId
    */
-  private static Map<Long, Map<Long, BaikalHandler>> confIdHandlersMap = new ConcurrentHashMap<>();
+  private static final Map<Long, Map<Long, BaikalHandler>> confIdHandlersMap = new ConcurrentHashMap<>();
 
   private static final String REGEX_COMMA = ",";
 
@@ -61,7 +61,7 @@ public final class BaikalHandlerCache {
       handler.setEnd(base.getEnd() == null ? 0 : base.getEnd());
       Long confId = base.getConfId();
       if (confId != null && confId > 0) {
-        /**confId等于空的情况不考虑处理,没配confId的handler是没有意义的*/
+        /*confId等于空的情况不考虑处理,没配confId的handler是没有意义的*/
         BaseNode root = BaikalConfCache.getConfById(confId);
         if (root == null) {
           String errorModeStr = JSON.toJSONString(base);
@@ -113,7 +113,7 @@ public final class BaikalHandlerCache {
      originHandler = idHandlerMap.get(handler.findBaikalId());
      idHandlerMap.put(handler.findBaikalId(), handler);
     }
-    /**原有handler的新handler不存在的scene*/
+    /*原有handler的新handler不存在的scene*/
     if (originHandler != null && originHandler.getScenes() != null && !originHandler.getScenes().isEmpty()) {
       if (handler.getScenes() == null || handler.getScenes().isEmpty()) {
         for (String scene : originHandler.getScenes()) {
@@ -129,7 +129,7 @@ public final class BaikalHandlerCache {
       }
       for (String scene : originHandler.getScenes()) {
         if(!handler.getScenes().contains(scene)){
-          /**新的不存在以前的scene*/
+          /*新的不存在以前的scene*/
           Map<Long, BaikalHandler> handlerMap = sceneHandlersMap.get(scene);
           if (handlerMap != null && !handlerMap.isEmpty()) {
             handlerMap.remove(originHandler.findBaikalId());

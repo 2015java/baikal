@@ -37,11 +37,11 @@ public final class BaikalConfCache {
 
   private static final String REGEX_COMMA = ",";
 
-  private static Map<Long, BaseNode> confMap = new ConcurrentHashMap<>();
+  private static final Map<Long, BaseNode> confMap = new ConcurrentHashMap<>();
 
-  private static Map<Long, Set<Long>> parentIdsMap = new ConcurrentHashMap<>();
+  private static final Map<Long, Set<Long>> parentIdsMap = new ConcurrentHashMap<>();
 
-  private static Map<Long, Set<Long>> forwardUseIdsMap = new ConcurrentHashMap<>();
+  private static final Map<Long, Set<Long>> forwardUseIdsMap = new ConcurrentHashMap<>();
 
   /**
    * 根据ID获取Conf配置
@@ -50,7 +50,7 @@ public final class BaikalConfCache {
    * @return
    */
   public static BaseNode getConfById(Long id) {
-    if (id == null || confMap == null) {
+    if (id == null) {
       return null;
     }
     return confMap.get(id);
@@ -80,9 +80,7 @@ public final class BaikalConfCache {
       }
     }
     for (BaikalConfDto confInfo : baikalConfDtos) {
-      /**更新前的此节点*/
       BaseNode origin = confMap.get(confInfo.getId());
-      /**填充父节点的子节点，构建树**/
       if (isRelation(confInfo)) {
         List<Long> sonIds;
         if (confInfo.getSonIds() == null || confInfo.getSonIds().isEmpty()) {
@@ -100,10 +98,8 @@ public final class BaikalConfCache {
               parentIdsMap.put(sonId, parentIds);
             }
             parentIds.add(confInfo.getId());
-            /**先从更新找*/
             BaseNode tmpNode = tmpConfMap.get(sonId);
             if (tmpNode == null) {
-              /**再从原始找*/
               tmpNode = confMap.get(sonId);
             }
             if (tmpNode == null) {
@@ -111,14 +107,12 @@ public final class BaikalConfCache {
               errors.add("sonId:" + sonId + " not exist conf:" + errorModeStr);
               log.error("sonId:{} not exist please check! conf:{}", sonId, errorModeStr);
             } else {
-              /**组建关系*/
               ((BaseRelation) tmpConfMap.get(confInfo.getId())).getChildren().add(tmpNode);
             }
           }
         }
         BaseRelation originRelation = (BaseRelation) origin;
         if (originRelation != null && originRelation.getChildren() != null && !originRelation.getChildren().isEmpty()) {
-          /**对不再是son的节点进行处理*/
           Set<Long> sonIdSet = new HashSet<>(sonIds);
           BaikalLinkedList<BaseNode> children = originRelation.getChildren();
           BaikalLinkedList.Node<BaseNode> listNode = children.getFirst();
@@ -134,13 +128,12 @@ public final class BaikalConfCache {
           }
         }
       }
-      /**foward处理*/
       if (origin != null && origin.getBaikalForward() != null) {
         if (confInfo.getForwardId() == null || confInfo.getForwardId() != origin.getBaikalForward()
             .findBaikalNodeId()) {
-          Set<Long> fowardUseIds = forwardUseIdsMap.get(origin.getBaikalForward().findBaikalNodeId());
-          if (fowardUseIds != null) {
-            fowardUseIds.remove(origin.findBaikalNodeId());
+          Set<Long> forwardUseIds = forwardUseIdsMap.get(origin.getBaikalForward().findBaikalNodeId());
+          if (forwardUseIds != null) {
+            forwardUseIds.remove(origin.findBaikalNodeId());
           }
         }
       }
@@ -152,40 +145,31 @@ public final class BaikalConfCache {
         }
         fowardUseIds.add(confInfo.getId());
       }
-      /**处理当前节点的foward*/
       if (confInfo.getForwardId() != null) {
-        /**先从更新找*/
-        BaseNode tmpFowardNode = tmpConfMap.get(confInfo.getForwardId());
-        if (tmpFowardNode == null) {
-          /**再从原始找*/
-          tmpFowardNode = confMap.get(confInfo.getForwardId());
+        BaseNode tmpForwardNode = tmpConfMap.get(confInfo.getForwardId());
+        if (tmpForwardNode == null) {
+          tmpForwardNode = confMap.get(confInfo.getForwardId());
         }
-        if (tmpFowardNode == null) {
+        if (tmpForwardNode == null) {
           String errorModeStr = JSON.toJSONString(confInfo);
           errors.add("forwardId:" + confInfo.getForwardId() + " not exist conf:" + errorModeStr);
           log.error("forwardId:{} not exist please check! conf:{}", confInfo.getForwardId(), errorModeStr);
         } else {
-          /**放入foward*/
-          tmpConfMap.get(confInfo.getId()).setBaikalForward(tmpFowardNode);
+          tmpConfMap.get(confInfo.getId()).setBaikalForward(tmpForwardNode);
         }
       }
     }
-    /**覆盖更新*/
     confMap.putAll(tmpConfMap);
     for (BaikalConfDto confInfo : baikalConfDtos) {
-      /**处理需要更新的父类*/
       Set<Long> parentIds = parentIdsMap.get(confInfo.getId());
       if (parentIds != null && !parentIds.isEmpty()) {
         for (Long parentId : parentIds) {
-          /**直接从缓存找*/
           BaseNode tmpParentNode = confMap.get(parentId);
           if (tmpParentNode == null) {
-            /**缓存没有 错误*/
             String errorModeStr = JSON.toJSONString(confInfo);
             errors.add("parentId:" + parentId + " not exist conf:" + errorModeStr);
             log.error("parentId:{} not exist please check! conf:{}", parentId, errorModeStr);
           } else {
-            /**更新原有依赖的子节点*/
             BaseRelation relation = (BaseRelation) tmpParentNode;
             BaikalLinkedList<BaseNode> children = relation.getChildren();
             if (children != null && !children.isEmpty()) {
@@ -201,17 +185,14 @@ public final class BaikalConfCache {
           }
         }
       }
-      /**处理需要更新的foward*/
-      Set<Long> fowardUseIds = forwardUseIdsMap.get(confInfo.getId());
-      if (fowardUseIds != null && !fowardUseIds.isEmpty()) {
-        for (Long fowardUseId : fowardUseIds) {
-          /**直接从缓存找*/
-          BaseNode tmpNode = confMap.get(fowardUseId);
+      Set<Long> forwardUseIds = forwardUseIdsMap.get(confInfo.getId());
+      if (forwardUseIds != null && !forwardUseIds.isEmpty()) {
+        for (Long forwardUseId : forwardUseIds) {
+          BaseNode tmpNode = confMap.get(forwardUseId);
           if (tmpNode == null) {
-            /**缓存没有 错误*/
             String errorModeStr = JSON.toJSONString(confInfo);
-            errors.add("forwardUseId:" + fowardUseId + " not exist conf:" + errorModeStr);
-            log.error("forwardUseId:{} not exist please check! conf:{}", fowardUseId, errorModeStr);
+            errors.add("forwardUseId:" + forwardUseId + " not exist conf:" + errorModeStr);
+            log.error("forwardUseId:{} not exist please check! conf:{}", forwardUseId, errorModeStr);
           } else {
             BaseNode forward = confMap.get(confInfo.getId());
             if (forward != null) {
@@ -220,7 +201,6 @@ public final class BaikalConfCache {
           }
         }
       }
-      /**更新的如果是root 需要更改handler*/
       BaseNode tmpNode = confMap.get(confInfo.getId());
       if (tmpNode != null) {
         BaikalHandlerCache.updateHandlerRoot(tmpNode);
@@ -232,7 +212,6 @@ public final class BaikalConfCache {
   public static void delete(List<Long> ids) {
     //FIXME 删除的相关性问题(父子节点  forward)
     for (Long id : ids) {
-      /**处理需要删除的父类*/
       Set<Long> parentIds = parentIdsMap.get(id);
       if (parentIds != null && !parentIds.isEmpty()) {
         for (Long parentId : parentIds) {

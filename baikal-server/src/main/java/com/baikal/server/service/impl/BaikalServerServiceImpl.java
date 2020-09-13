@@ -53,7 +53,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
    */
   private Date lastUpdateTime;
 
-  private static Set<Integer> appSet = new HashSet<>();
+  private static final Set<Integer> appSet = new HashSet<>();
   /**
    * 提前一天上线(提前上线避免延迟与方便检查)
    */
@@ -73,22 +73,22 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   /**
    * key:app value baseList
    */
-  private Map<Integer, Map<Long, BaikalBase>> baseWaitMap = new HashMap<>();
+  private final Map<Integer, Map<Long, BaikalBase>> baseWaitMap = new HashMap<>();
   /**
    * key:app value conf
    */
-  private Map<Integer, Map<Long, BaikalConf>> confWaitMap = new HashMap<>();
+  private final Map<Integer, Map<Long, BaikalConf>> confWaitMap = new HashMap<>();
 
   /**
    * key:app value baseList
    */
-  private Map<Integer, Map<Long, BaikalBase>> baseActiveMap = new HashMap<>();
+  private final Map<Integer, Map<Long, BaikalBase>> baseActiveMap = new HashMap<>();
   /**
    * key:app value conf
    */
-  private Map<Integer, Map<Long, BaikalConf>> confActiveMap = new HashMap<>();
+  private final Map<Integer, Map<Long, BaikalConf>> confActiveMap = new HashMap<>();
 
-  private Map<Integer, Map<Byte, Map<String, Integer>>> leafClassMap = new HashMap<>();
+  private final Map<Integer, Map<Byte, Map<String, Integer>>> leafClassMap = new HashMap<>();
 
   @Override
   public Set<Integer> getAppSet() {
@@ -148,7 +148,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
     update();
   }
 
-  private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+  private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 
   /**
    * 定时任务,距上次执行完成10s后执行
@@ -166,21 +166,21 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
     Map<Integer, Map<Long, BaikalConf>> waitConfMap = new HashMap<>(appSet.size());
     Map<Integer, Map<Long, BaikalBase>> waitBaseMap = new HashMap<>(appSet.size());
     Set<Long> dbWaitSet = new HashSet<>();
-    /**先找数据库里的变化*/
+    /*先找数据库里的变化*/
     updateFromDbConf(deleteConfMap, activeChangeConfMap, waitConfMap, now, dbWaitSet);
     updateFromDbBase(deleteBaseMap, activeChangeBaseMap, waitBaseMap, now, dbWaitSet);
-    /**原先active的check*/
+    /*原先active的check*/
     originActiveCheckConf(deleteConfMap, now);
     originActiveCheckBase(deleteBaseMap, now);
-    /**原先的wait check 找active的*/
+    /*原先的wait check 找active的*/
     originWaitCheckConf(activeChangeConfMap, now, deleteConfMap, dbWaitSet);
     originWaitCheckBase(activeChangeBaseMap, now, deleteBaseMap, dbWaitSet);
-    /**更新本地缓存*/
+    /*更新本地缓存*/
     long updateVersion = updateLocal(deleteBaseMap, deleteConfMap, activeChangeBaseMap, waitBaseMap,
         activeChangeConfMap, waitConfMap);
-    /**更新完毕 发送变更消息*/
+    /*更新完毕 发送变更消息*/
     sendChange(deleteConfMap, deleteBaseMap, activeChangeConfMap, activeChangeBaseMap, updateVersion);
-    /**更新时间*/
+    /*更新时间*/
     lastUpdateTime = now;
   }
 
@@ -197,7 +197,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
       for (BaikalConf conf : confList) {
         appSet.add(conf.getApp());
         if (conf.getStatus() == StatusEnum.OFFLINE.getStatus()) {
-          /**手动更新下线*/
+          /*手动更新下线*/
           deleteConfMap.computeIfAbsent(conf.getApp(), k -> new HashSet<>()).add(conf.getId());
           continue;
         }
@@ -209,7 +209,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
             waitConfMap.computeIfAbsent(conf.getApp(), k -> new HashMap<>()).put(conf.getId(), conf);
           }
         } else {
-          /**手动更新时间下线*/
+          /*手动更新时间下线*/
           deleteConfMap.computeIfAbsent(conf.getApp(), k -> new HashSet<>()).add(conf.getId());
         }
       }
@@ -229,7 +229,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
       for (BaikalBase base : baseList) {
         appSet.add(base.getApp());
         if (base.getStatus() == StatusEnum.OFFLINE.getStatus()) {
-          /**手动更新下线*/
+          /*手动更新下线*/
           deleteBaseMap.computeIfAbsent(base.getApp(), k -> new HashSet<>()).add(base.getId());
           continue;
         }
@@ -241,7 +241,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
             waitBaseMap.computeIfAbsent(base.getApp(), k -> new HashMap<>()).put(base.getId(), base);
           }
         } else {
-          /**手动更新时间下线*/
+          /*手动更新时间下线*/
           deleteBaseMap.computeIfAbsent(base.getApp(), k -> new HashSet<>()).add(base.getId());
         }
       }
@@ -263,7 +263,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
         if (passActiveCheck(confEntry.getValue().getTimeType(), confEntry.getValue().getStart(),
             confEntry.getValue().getEnd(), now) && !deleteContainsCheck(confDeleteMap, entry.getKey(),
             confEntry.getKey()) && !dbWaitSet.contains(confEntry.getKey())) {
-          /**wait的变active 如果已经有了 说明已经吸收了库里的变化 则不更改*/
+          /*wait的变active 如果已经有了 说明已经吸收了库里的变化 则不更改*/
           activeChangeConfMap.computeIfAbsent(confEntry.getValue().getApp(), k -> new HashMap<>())
               .putIfAbsent(confEntry.getValue().getId(), confEntry.getValue());
         }
@@ -286,7 +286,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
         if (passActiveCheck(baseEntry.getValue().getTimeType(), baseEntry.getValue().getStart(),
             baseEntry.getValue().getEnd(), now) && !deleteContainsCheck(baseDeleteMap, entry.getKey(),
             baseEntry.getKey()) && !dbWaitSet.contains(baseEntry.getKey())) {
-          /**wait的变active 如果已经有了 说明已经吸收了库里的变化 则不更改*/
+          /*wait的变active 如果已经有了 说明已经吸收了库里的变化 则不更改*/
           activeChnageBaseMap.computeIfAbsent(baseEntry.getValue().getApp(), k -> new HashMap<>())
               .putIfAbsent(baseEntry.getValue().getId(), baseEntry.getValue());
         }
@@ -313,7 +313,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
       for (Map.Entry<Long, BaikalConf> confEntry : activeEnyry.getValue().entrySet()) {
         if (!passActiveCheck(confEntry.getValue().getTimeType(), confEntry.getValue().getStart(),
             confEntry.getValue().getEnd(), now)) {
-          /**原先的不再active*/
+          /*原先的不再active*/
           deleteConfMap.computeIfAbsent(activeEnyry.getKey(), k -> new HashSet<>())
               .add(confEntry.getValue().getId());
         }
@@ -332,7 +332,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
       for (Map.Entry<Long, BaikalBase> baseEntry : activeEnyry.getValue().entrySet()) {
         if (!passActiveCheck(baseEntry.getValue().getTimeType(), baseEntry.getValue().getStart(),
             baseEntry.getValue().getEnd(), now)) {
-          /**原先的不再active*/
+          /*原先的不再active*/
           deleteBaseMap.computeIfAbsent(activeEnyry.getKey(), k -> new HashSet<>()).add(baseEntry.getValue().getId());
         }
       }
@@ -348,9 +348,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
       Map<String, Object> updateMap = null;
       Map insertOrUpdateConfMap = activeChangeConfMap.get(app);
       if (!CollectionUtils.isEmpty(insertOrUpdateConfMap)) {
-        if(updateMap == null){
-          updateMap = new HashMap<>(5);
-        }
+        updateMap = new HashMap<>(5);
         updateMap.put("insertOrUpdateConfs", insertOrUpdateConfMap.values());
       }
       Map insertOrUpdateBaseMap = activeChnageBaseMap.get(app);
@@ -374,7 +372,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
         }
         updateMap.put("deleteBaseIds", deleteBases);
       }
-      /**有更新就推送消息*/
+      /*有更新就推送消息*/
       if (updateMap != null) {
         updateMap.put("version", updateVersion);
         String message = JSON.toJSONString(updateMap);
@@ -463,7 +461,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   @Override
   public void afterPropertiesSet() {
     Date now = new Date();
-    /**baseList*/
+    /*baseList*/
     BaikalBaseExample baseExample = new BaikalBaseExample();
     baseExample.createCriteria().andStatusEqualTo(StatusEnum.ONLINE.getStatus()).andUpdateAtLessThanOrEqualTo(now);
     List<BaikalBase> baseList = baseMapper.selectByExample(baseExample);
@@ -480,7 +478,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
         }
       }
     }
-    /**ConfList*/
+    /*ConfList*/
     BaikalConfExample confExample = new BaikalConfExample();
     confExample.createCriteria().andStatusEqualTo(StatusEnum.ONLINE.getStatus()).andUpdateAtLessThanOrEqualTo(now);
     List<BaikalConf> confList = confMapper.selectByExample(confExample);
@@ -542,28 +540,22 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
           log.error("invalid time config id:{}, timeType:{}, baikalStart:{}, baikalEnd:{}", id, timeType, start, end);
           return false;
         }
-        if (now.after(end)) {
-          /**时间已过*/
-          return false;
-        }
-        return true;
+        /*时间已过*/
+        return !now.after(end);
       case AFTER_START:
       case TEST_AFTER_START:
         if (start == null) {
-          log.error("invalid time config id:{}, timeType:{}, baikalStart:{}", id, timeType, start);
+          log.error("invalid time config id:{}, timeType:{}, baikalStart:{}", id, timeType, null);
           return false;
         }
         return true;
       case BEFORE_END:
         if (end == null) {
-          log.error("invalid time config id:{}, timeType:{}, baikalEnd:{}", id, timeType, end);
+          log.error("invalid time config id:{}, timeType:{}, baikalEnd:{}", id, timeType, null);
           return false;
         }
-        if (now.after(end)) {
-          /**时间已过*/
-          return false;
-        }
-        return true;
+        /*时间已过*/
+        return !now.after(end);
       case TEST_BETWEEN:
         if (start == null || end == null) {
           log.error("invalid time config id:{}, timeType:{}, baikalStart:{}, baikalEnd:{}", id, timeType, start, end);
@@ -572,7 +564,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
         return true;
       case TEST_BEFORE_END:
         if (end == null) {
-          log.error("invalid time config id:{}, timeType:{}, baikalEnd:{}", id, timeType, end);
+          log.error("invalid time config id:{}, timeType:{}, baikalEnd:{}", id, timeType, null);
           return false;
         }
         return true;
@@ -598,22 +590,13 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
       case TEST_AFTER_START:
         return true;
       case BETWEEN:
-        if (activeTimeMills > start.getTime() && now.before(end)) {
-          /**时间正确*/
-          return true;
-        }
-        return false;
+        /*时间正确*/
+        return activeTimeMills > start.getTime() && now.before(end);
       case AFTER_START:
-        if (activeTimeMills > start.getTime()) {
-          return true;
-        }
-        return false;
+        return activeTimeMills > start.getTime();
       case BEFORE_END:
-        if (now.before(end)) {
-          /**时间正确*/
-          return true;
-        }
-        return false;
+        /*时间正确*/
+        return now.before(end);
       default:
         break;
     }

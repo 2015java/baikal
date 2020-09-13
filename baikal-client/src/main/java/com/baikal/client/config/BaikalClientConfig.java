@@ -150,7 +150,7 @@ public class BaikalClientConfig {
     container.setPrefetchCount(1);
     container.setConcurrentConsumers(1);
     container.setAcknowledgeMode(AcknowledgeMode.NONE);
-    /**版本兼容*/
+    /*版本兼容*/
     container.setMessageListener((Object) baikalMockListener());
     return container;
   }
