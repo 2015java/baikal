@@ -125,7 +125,6 @@ public final class BaikalDispatcher {
         log.debug("handlers maybe all expired scene:{}", pack.getScene());
         return;
       }
-
       if (handlerMap.size() == 1) {
         /*处理的handler只有一个 直接处理*/
         BaikalHandler handler = handlerMap.values().iterator().next();
@@ -142,9 +141,12 @@ public final class BaikalDispatcher {
     }
     /*最后是按照confId的root*/
     long confId = pack.getConfId();
+    if(confId <= 0){
+      return;
+    }
     BaikalContext cxt = new BaikalContext(confId, pack);
     if (DebugEnum.filter(DebugEnum.IN_PACK, pack.getDebug())) {
-      log.info("handle confId:{} in pack:{}", pack.getConfId(), JSON.toJSONString(pack));
+      log.info("handle confId:{} in pack:{}", confId, JSON.toJSONString(pack));
     }
     BaseNode root = BaikalConfCache.getConfById(confId);
     if (root != null) {
