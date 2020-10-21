@@ -54,7 +54,7 @@ public class BaikalClientConfig {
 
   @Bean(name = "baikalUpdateQueue")
   public Queue baikalUpdateQueue() {
-    return QueueBuilder.nonDurable(Constant.genUpdateTmpQueue()).autoDelete().build();
+    return QueueBuilder.nonDurable(Constant.genUpdateTmpQueue()).exclusive().autoDelete().build();
   }
 
   @Bean(name = "baikalUpdateExchange")

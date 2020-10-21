@@ -9,6 +9,7 @@ import java.util.Collection;
 
 /**
  * @author kowalski
+ * 判断key对应的值是否在set中
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
