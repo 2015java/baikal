@@ -17,7 +17,7 @@ public final class BaikalBeanUtils {
   }
 
   public static boolean containsBean(String name) {
-    if(factory == null){
+    if (factory == null) {
       return false;
     }
     return factory.containsBean(name);

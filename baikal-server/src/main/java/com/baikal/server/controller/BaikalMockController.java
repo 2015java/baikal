@@ -47,8 +47,8 @@ public class BaikalMockController {
       return new WebResult<>(-1, "参数不正确", null);
     }
     WebResult<List<BaikalPack>> result = new WebResult<>();
-    List<BaikalPack> errPacks= new ArrayList<>();
-    for(BaikalPack pack:packs) {
+    List<BaikalPack> errPacks = new ArrayList<>();
+    for (BaikalPack pack : packs) {
       if (pack.getBaikalId() <= 0 && StringUtils.isEmpty(pack.getScene())) {
         errPacks.add(pack);
         continue;

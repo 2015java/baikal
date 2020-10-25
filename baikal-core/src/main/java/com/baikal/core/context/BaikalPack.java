@@ -60,7 +60,7 @@ public final class BaikalPack {
     BaikalPack pack = new BaikalPack(traceId, requestTime);
     pack.setBaikalId(baikalId);
     pack.setScene(scene);
-    if(roam != null) {
+    if (roam != null) {
       /*此处没有用深拷贝*/
       pack.setRoam(new BaikalRoam(roam));
     }

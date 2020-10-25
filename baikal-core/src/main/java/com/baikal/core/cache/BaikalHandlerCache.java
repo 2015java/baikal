@@ -70,7 +70,7 @@ public final class BaikalHandlerCache {
           continue;
         }
         Map<Long, BaikalHandler> handlerMap = confIdHandlersMap.get(confId);
-        if(handlerMap == null){
+        if (handlerMap == null) {
           handlerMap = new ConcurrentHashMap<>();
           confIdHandlersMap.put(confId, handlerMap);
         }
@@ -91,7 +91,7 @@ public final class BaikalHandlerCache {
   public static void updateHandlerRoot(BaseNode updateConfNode) {
     Map<Long, BaikalHandler> handlerMap = confIdHandlersMap.get(updateConfNode.getBaikalNodeId());
     if (handlerMap != null) {
-      for(BaikalHandler handler:handlerMap.values()){
+      for (BaikalHandler handler : handlerMap.values()) {
         handler.setRoot(updateConfNode);
       }
     }
@@ -109,9 +109,9 @@ public final class BaikalHandlerCache {
 
   public static void onlineOrUpdateHandler(BaikalHandler handler) {
     BaikalHandler originHandler = null;
-    if(handler.findBaikalId() > 0){
-     originHandler = idHandlerMap.get(handler.findBaikalId());
-     idHandlerMap.put(handler.findBaikalId(), handler);
+    if (handler.findBaikalId() > 0) {
+      originHandler = idHandlerMap.get(handler.findBaikalId());
+      idHandlerMap.put(handler.findBaikalId(), handler);
     }
     /*原有handler的新handler不存在的scene*/
     if (originHandler != null && originHandler.getScenes() != null && !originHandler.getScenes().isEmpty()) {
@@ -128,7 +128,7 @@ public final class BaikalHandlerCache {
         return;
       }
       for (String scene : originHandler.getScenes()) {
-        if(!handler.getScenes().contains(scene)){
+        if (!handler.getScenes().contains(scene)) {
           /*新的不存在以前的scene*/
           Map<Long, BaikalHandler> handlerMap = sceneHandlersMap.get(scene);
           if (handlerMap != null && !handlerMap.isEmpty()) {

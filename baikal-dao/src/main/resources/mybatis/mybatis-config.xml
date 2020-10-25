@@ -8,8 +8,8 @@
     This file was generated on Mon Feb 24 10:38:13 CST 2020.
   -->
   <mappers>
-    <mapper resource="mybatis/BaikalBaseMapper.xml" />
-    <mapper resource="mybatis/BaikalConfMapper.xml" />
-    <mapper resource="mybatis/BaikalPushHistoryMapper.xml" />
+    <mapper resource="mybatis/BaikalBaseMapper.xml"/>
+    <mapper resource="mybatis/BaikalConfMapper.xml"/>
+    <mapper resource="mybatis/BaikalPushHistoryMapper.xml"/>
   </mappers>
 </configuration>

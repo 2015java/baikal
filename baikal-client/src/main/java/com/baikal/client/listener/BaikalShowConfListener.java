@@ -115,7 +115,7 @@ public class BaikalShowConfListener implements MessageListener {
 
   @SuppressWarnings("unchecked")
   private Map assembleNode(BaseNode node) {
-    if(node == null){
+    if (node == null) {
       return null;
     }
     Map map = new HashMap<>();
@@ -128,16 +128,16 @@ public class BaikalShowConfListener implements MessageListener {
              listNode != null; listNode = listNode.next) {
           BaseNode child = listNode.item;
           Map childMap = assembleNode(child);
-          if(childMap != null) {
+          if (childMap != null) {
             showChildren.add(childMap);
           }
         }
         map.put("children", showChildren);
       }
       BaseNode foward = relation.getBaikalForward();
-      if(foward != null) {
+      if (foward != null) {
         Map forwardMap = assembleNode(foward);
-        if(forwardMap != null) {
+        if (forwardMap != null) {
           map.put("baikalForward", forwardMap);
         }
       }
@@ -151,9 +151,9 @@ public class BaikalShowConfListener implements MessageListener {
       map = JSON.parseObject(JSON.toJSONString(node, FAST_JSON_CONFIG, SPRING_BEAN_FILTER,
           SerializerFeature.DisableCircularReferenceDetect), Map.class);
       BaseNode forward = node.getBaikalForward();
-      if(forward != null) {
+      if (forward != null) {
         Map forwardMap = assembleNode(forward);
-        if(forwardMap != null) {
+        if (forwardMap != null) {
           map.put("baikalForward", forwardMap);
         }
       }
@@ -169,7 +169,7 @@ public class BaikalShowConfListener implements MessageListener {
   private static final class SpringBeanAndForwardFilter extends SimplePropertyPreFilter {
     @Override
     public boolean apply(JSONSerializer serializer, Object source, String name) {
-      if("baikalForward".equals(name)){
+      if ("baikalForward".equals(name)) {
         return false;
       }
       return !BaikalBeanUtils.containsBean(name);

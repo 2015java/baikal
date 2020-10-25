@@ -51,7 +51,7 @@ public class BaikalController {
 
   @RequestMapping(value = "/baikal/app/list", method = RequestMethod.GET)
   public WebResult getBaikalApp(@RequestParam(defaultValue = "1") Integer pageIndex,
-      @RequestParam(defaultValue = "100") Integer pageSize){
+                                @RequestParam(defaultValue = "100") Integer pageSize) {
     WebResult<List<BaikalApp>> result = new WebResult<>();
     Map<Integer, AppEnum> map = AppEnum.getMAP();
     List<BaikalApp> list = map.entrySet().stream()
@@ -63,23 +63,23 @@ public class BaikalController {
 
   @RequestMapping(value = "/baikal/conf/list", method = RequestMethod.GET)
   public WebResult getBaikalConf(@RequestParam Integer app, @RequestParam(defaultValue = "1") Integer pageIndex,
-      @RequestParam(defaultValue = "100") Integer pageSize){
+                                 @RequestParam(defaultValue = "100") Integer pageSize) {
     return editService.getBase(app, pageIndex, pageSize);
   }
 
   @RequestMapping("/baikal/conf/detail")
-  public WebResult getBaikalAppConf(@RequestParam Integer app, @RequestParam Long baikalId){
+  public WebResult getBaikalAppConf(@RequestParam Integer app, @RequestParam Long baikalId) {
     Object obj = amqpTemplate.convertSendAndReceive(Constant.getShowConfExchange(), String.valueOf(app),
         String.valueOf(baikalId));
     if (obj != null) {
       String json = (String) obj;
       if (!StringUtils.isEmpty(json)) {
         Map map = JSON.parseObject(json, Map.class);
-        if(!CollectionUtils.isEmpty(map)){
+        if (!CollectionUtils.isEmpty(map)) {
           Map handlerMap = (Map) map.get("handler");
-          if(!CollectionUtils.isEmpty(handlerMap)){
+          if (!CollectionUtils.isEmpty(handlerMap)) {
             Map rootMap = (Map) handlerMap.get("root");
-            if(!CollectionUtils.isEmpty(rootMap)){
+            if (!CollectionUtils.isEmpty(rootMap)) {
               Set<Long> nodeIdSet = new HashSet<>();
               assemble(app, rootMap, nodeIdSet);
               return new WebResult<>(map);
@@ -92,112 +92,114 @@ public class BaikalController {
   }
 
   @SuppressWarnings("unchecked")
-  private List<Map> getChild(Map map){
-    return (List)map.get("children");
+  private List<Map> getChild(Map map) {
+    return (List) map.get("children");
   }
 
   @SuppressWarnings("unchecked")
-  private void assemble(Integer app, Map map, Set<Long> nodeIdSet){
-    if(map == null){
+  private void assemble(Integer app, Map map, Set<Long> nodeIdSet) {
+    if (map == null) {
       return;
     }
     Long nodeId = (Long) map.get("baikalNodeId");
-    if (nodeId == null){
+    if (nodeId == null) {
       return;
     }
     Map foward = (Map) map.get("baikalForward");
-    if(foward != null){
+    if (foward != null) {
       foward.put("nextId", nodeId);
     }
     assembleOther(app, map, nodeIdSet);
     assemble(app, foward, nodeIdSet);
     List<Map> children = getChild(map);
-    if(CollectionUtils.isEmpty(children)){
+    if (CollectionUtils.isEmpty(children)) {
       return;
     }
-    for(Map child:children){
+    for (Map child : children) {
       child.put("parentId", nodeId);
       assemble(app, child, nodeIdSet);
     }
   }
+
   @SuppressWarnings("unchecked")
-  private void assembleOther(Integer app, Map map, Set<Long> nodeIdSet){
+  private void assembleOther(Integer app, Map map, Set<Long> nodeIdSet) {
     Long nodeId = (Long) map.get("baikalNodeId");
-    if(nodeId == null /*|| nodeIdSet.contains(baikalNodeId)*/){
+    if (nodeId == null /*|| nodeIdSet.contains(baikalNodeId)*/) {
       return;
     }
     nodeIdSet.add(nodeId);
     Map showConf = new HashMap(map.size());
     Set<Map.Entry> entrySet = map.entrySet();
     List<Object> needRemoveKey = new ArrayList<>(map.size());
-    for(Map.Entry entry:entrySet){
-      if(!("baikalForward".equals(entry.getKey()) || "children".equals(entry.getKey()) || "nextId".equals(entry.getKey()) || "parentId".equals(entry.getKey()))){
+    for (Map.Entry entry : entrySet) {
+      if (!("baikalForward".equals(entry.getKey()) || "children".equals(entry.getKey()) || "nextId".equals(entry.getKey()) || "parentId".equals(entry.getKey()))) {
         needRemoveKey.add(entry.getKey());
-        if(!adjust(entry.getKey(), entry.getValue(), showConf)){
+        if (!adjust(entry.getKey(), entry.getValue(), showConf)) {
           showConf.put(entry.getKey(), entry.getValue());
         }
       }
     }
     Object baikalForward = map.get("baikalForward");
-    if(baikalForward != null){
+    if (baikalForward != null) {
       map.remove("baikalForward");
       map.put("forward", baikalForward);
     }
-    for(Object removeKey:needRemoveKey){
+    for (Object removeKey : needRemoveKey) {
       map.remove(removeKey);
     }
     map.put("showConf", showConf);
     BaikalConf baikalConf = serverService.getActiveConfById(app, nodeId);
-    if(baikalConf != null){
-      if(!StringUtils.isEmpty(baikalConf.getName())){
+    if (baikalConf != null) {
+      if (!StringUtils.isEmpty(baikalConf.getName())) {
         showConf.put("nodeName", baikalConf.getName());
       }
-      if(!StringUtils.isEmpty(baikalConf.getConfField())){
+      if (!StringUtils.isEmpty(baikalConf.getConfField())) {
         showConf.put("confField", baikalConf.getConfField());
       }
-      if(!StringUtils.isEmpty(baikalConf.getConfName())){
+      if (!StringUtils.isEmpty(baikalConf.getConfName())) {
         showConf.put("confName", baikalConf.getId() + "-" + baikalConf.getConfName().substring(baikalConf.getConfName().lastIndexOf('.') + 1));
       }
-      if(baikalConf.getType() != null){
+      if (baikalConf.getType() != null) {
         showConf.put("nodeType", baikalConf.getType());
       }
-      if(baikalConf.getStart() != null){
+      if (baikalConf.getStart() != null) {
         map.put("start", baikalConf.getStart());
       }
-      if(baikalConf.getEnd() != null){
+      if (baikalConf.getEnd() != null) {
         map.put("end", baikalConf.getEnd());
       }
-      if(baikalConf.getTimeType() != null){
+      if (baikalConf.getTimeType() != null) {
         map.put("timeType", baikalConf.getTimeType());
       }
     }
   }
+
   @SuppressWarnings("unchecked")
-  private boolean adjust(Object key, Object value, Map showConf){
-    if("baikalNodeId".equals(key)){
+  private boolean adjust(Object key, Object value, Map showConf) {
+    if ("baikalNodeId".equals(key)) {
       showConf.put("nodeId", value);
       return true;
     }
-    if("baikalNodeDebug".equals(key)){
+    if ("baikalNodeDebug".equals(key)) {
       showConf.put("debug", value);
       return true;
     }
-    if("baikalStart".equals(key)){
+    if ("baikalStart".equals(key)) {
       long time = Long.parseLong(value.toString());
-      if(time != 0){
+      if (time != 0) {
         showConf.put("开始时间", sdf.format(new Date(time)));
       }
       return true;
     }
-    if("baikalEnd".equals(key)){
+    if ("baikalEnd".equals(key)) {
       long time = Long.parseLong(value.toString());
-      if(time != 0){
+      if (time != 0) {
         showConf.put("结束时间", sdf.format(new Date(time)));
       }
       return true;
     }
-    if("baikalInverse".equals(key)){
-      if(Boolean.parseBoolean(value.toString())){
+    if ("baikalInverse".equals(key)) {
+      if (Boolean.parseBoolean(value.toString())) {
         showConf.put("inverse", value);
       }
       return true;

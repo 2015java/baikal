@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 public class BaikalSpringBeanFactory implements BaikalBeanUtils.BaikalBeanFactory, ApplicationContextAware {
 
   private AutowireCapableBeanFactory beanFactory;
+
   /**
    * 注入Bean
    *

@@ -43,7 +43,7 @@ public final class BaikalDispatcher {
       return Collections.singletonList(cxt);
     }
     /*其次是按scene区分的一组*/
-    if(pack.getScene() != null && !pack.getScene().isEmpty()) {
+    if (pack.getScene() != null && !pack.getScene().isEmpty()) {
       Map<Long, BaikalHandler> handlerMap = BaikalHandlerCache.getHandlersByScene(pack.getScene());
       if (handlerMap == null || handlerMap.isEmpty()) {
         log.debug("handlers maybe all expired scene:{}", pack.getScene());
@@ -71,7 +71,7 @@ public final class BaikalDispatcher {
 
     /*最后是按照confId的root*/
     long confId = pack.getConfId();
-    if(confId <= 0){
+    if (confId <= 0) {
       return Collections.emptyList();
     }
     BaikalContext cxt = new BaikalContext(confId, pack);
@@ -105,21 +105,21 @@ public final class BaikalDispatcher {
 
   public static void asyncDispatcher(BaikalPack pack) {
     if (!checkPack(pack)) {
-      return ;
+      return;
     }
     /*优先ID*/
     if (pack.getBaikalId() > 0) {
       BaikalHandler handler = BaikalHandlerCache.getHandlerById(pack.getBaikalId());
       if (handler == null) {
         log.debug("handler maybe expired baikalId:{}", pack.getBaikalId());
-        return ;
+        return;
       }
       BaikalContext cxt = new BaikalContext(handler.findBaikalId(), pack);
       handler.handle(cxt);
-      return ;
+      return;
     }
     /*其次是按scene区分的一组*/
-    if(pack.getScene() != null && !pack.getScene().isEmpty()) {
+    if (pack.getScene() != null && !pack.getScene().isEmpty()) {
       Map<Long, BaikalHandler> handlerMap = BaikalHandlerCache.getHandlersByScene(pack.getScene());
       if (handlerMap == null || handlerMap.isEmpty()) {
         log.debug("handlers maybe all expired scene:{}", pack.getScene());
@@ -141,7 +141,7 @@ public final class BaikalDispatcher {
     }
     /*最后是按照confId的root*/
     long confId = pack.getConfId();
-    if(confId <= 0){
+    if (confId <= 0) {
       return;
     }
     BaikalContext cxt = new BaikalContext(confId, pack);
@@ -183,7 +183,7 @@ public final class BaikalDispatcher {
     if (pack.getScene() != null && !pack.getScene().isEmpty()) {
       return true;
     }
-    if(pack.getConfId() > 0){
+    if (pack.getConfId() > 0) {
       return true;
     }
     log.error("invalid pack none baikalId none scene none confId:{}", JSON.toJSONString(pack));

@@ -98,7 +98,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   @Override
   public List<BaikalBase> getBaseActive(Integer app) {
     Map<Long, BaikalBase> baseMap = baseActiveMap.get(app);
-    if(CollectionUtils.isEmpty(baseMap)){
+    if (CollectionUtils.isEmpty(baseMap)) {
       return Collections.emptyList();
     }
     return new ArrayList<>(baseMap.values());
@@ -121,6 +121,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
 
   /**
    * 根据confId获取配置信息
+   *
    * @param app
    * @param confId
    * @return
@@ -128,7 +129,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   @Override
   public BaikalConf getActiveConfById(Integer app, Long confId) {
     Map<Long, BaikalConf> confMap = confActiveMap.get(app);
-    if(!CollectionUtils.isEmpty(confMap)){
+    if (!CollectionUtils.isEmpty(confMap)) {
       return confMap.get(confId);
     }
     return null;
@@ -137,7 +138,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   @Override
   public Map<String, Integer> getLeafClassMap(Integer app, Byte type) {
     Map<Byte, Map<String, Integer>> map = leafClassMap.get(app);
-    if(map != null){
+    if (map != null) {
       return map.get(type);
     }
     return null;
@@ -156,7 +157,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   @Scheduled(fixedDelay = 20000)
   private void update() {
     Date now = new Date();
-    log.info("=================now:{}   last:{}",sdf.format(now), sdf.format(lastUpdateTime));
+    log.info("=================now:{}   last:{}", sdf.format(now), sdf.format(lastUpdateTime));
     Map<Integer, Set<Long>> deleteConfMap = new HashMap<>(appSet.size());
     Map<Integer, Set<Long>> deleteBaseMap = new HashMap<>(appSet.size());
 
@@ -185,10 +186,10 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   }
 
   private void updateFromDbConf(Map<Integer, Set<Long>> deleteConfMap,
-      Map<Integer, Map<Long, BaikalConf>> activeChangeConfMap,
-      Map<Integer, Map<Long, BaikalConf>> waitConfMap,
-      Date now,
-      Set<Long> dbWaitSet) {
+                                Map<Integer, Map<Long, BaikalConf>> activeChangeConfMap,
+                                Map<Integer, Map<Long, BaikalConf>> waitConfMap,
+                                Date now,
+                                Set<Long> dbWaitSet) {
     BaikalConfExample confExample = new BaikalConfExample();
     confExample.createCriteria().andUpdateAtGreaterThan(lastUpdateTime).andUpdateAtLessThanOrEqualTo(now);
     List<BaikalConf> confList = confMapper.selectByExample(confExample);
@@ -217,10 +218,10 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   }
 
   private void updateFromDbBase(Map<Integer, Set<Long>> deleteBaseMap,
-      Map<Integer, Map<Long, BaikalBase>> activeChnageBaseMap,
-      Map<Integer, Map<Long, BaikalBase>> waitBaseMap,
-      Date now,
-      Set<Long> dbWaitSet) {
+                                Map<Integer, Map<Long, BaikalBase>> activeChnageBaseMap,
+                                Map<Integer, Map<Long, BaikalBase>> waitBaseMap,
+                                Date now,
+                                Set<Long> dbWaitSet) {
     BaikalBaseExample baseExample = new BaikalBaseExample();
     baseExample.createCriteria().andUpdateAtGreaterThan(lastUpdateTime).andUpdateAtLessThanOrEqualTo(now);
     List<BaikalBase> baseList = baseMapper.selectByExample(baseExample);
@@ -255,9 +256,9 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
    * @param now
    */
   private void originWaitCheckConf(Map<Integer, Map<Long, BaikalConf>> activeChangeConfMap,
-      Date now,
-      Map<Integer, Set<Long>> confDeleteMap,
-      Set<Long> dbWaitSet) {
+                                   Date now,
+                                   Map<Integer, Set<Long>> confDeleteMap,
+                                   Set<Long> dbWaitSet) {
     for (Map.Entry<Integer, Map<Long, BaikalConf>> entry : confWaitMap.entrySet()) {
       for (Map.Entry<Long, BaikalConf> confEntry : entry.getValue().entrySet()) {
         if (passActiveCheck(confEntry.getValue().getTimeType(), confEntry.getValue().getStart(),
@@ -278,9 +279,9 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
    * @param now
    */
   private void originWaitCheckBase(Map<Integer, Map<Long, BaikalBase>> activeChnageBaseMap,
-      Date now,
-      Map<Integer, Set<Long>> baseDeleteMap,
-      Set<Long> dbWaitSet) {
+                                   Date now,
+                                   Map<Integer, Set<Long>> baseDeleteMap,
+                                   Set<Long> dbWaitSet) {
     for (Map.Entry<Integer, Map<Long, BaikalBase>> entry : baseWaitMap.entrySet()) {
       for (Map.Entry<Long, BaikalBase> baseEntry : entry.getValue().entrySet()) {
         if (passActiveCheck(baseEntry.getValue().getTimeType(), baseEntry.getValue().getStart(),
@@ -340,10 +341,10 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   }
 
   private void sendChange(Map<Integer, Set<Long>> deleteConfMap,
-      Map<Integer, Set<Long>> deleteBaseMap,
-      Map<Integer, Map<Long, BaikalConf>> activeChangeConfMap,
-      Map<Integer, Map<Long, BaikalBase>> activeChnageBaseMap,
-      long updateVersion) {
+                          Map<Integer, Set<Long>> deleteBaseMap,
+                          Map<Integer, Map<Long, BaikalConf>> activeChangeConfMap,
+                          Map<Integer, Map<Long, BaikalBase>> activeChnageBaseMap,
+                          long updateVersion) {
     for (Integer app : appSet) {
       Map<String, Object> updateMap = null;
       Map insertOrUpdateConfMap = activeChangeConfMap.get(app);
@@ -353,21 +354,21 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
       }
       Map insertOrUpdateBaseMap = activeChnageBaseMap.get(app);
       if (!CollectionUtils.isEmpty(insertOrUpdateBaseMap)) {
-        if(updateMap == null){
+        if (updateMap == null) {
           updateMap = new HashMap<>(4);
         }
         updateMap.put("insertOrUpdateBases", insertOrUpdateBaseMap.values());
       }
       Set deleteConfIds = deleteConfMap.get(app);
       if (!CollectionUtils.isEmpty(deleteConfMap)) {
-        if(updateMap == null){
+        if (updateMap == null) {
           updateMap = new HashMap<>(3);
         }
         updateMap.put("deleteConfIds", deleteConfIds);
       }
       Set deleteBases = deleteBaseMap.get(app);
       if (!CollectionUtils.isEmpty(deleteBases)) {
-        if(updateMap == null){
+        if (updateMap == null) {
           updateMap = new HashMap<>(2);
         }
         updateMap.put("deleteBaseIds", deleteBases);
@@ -395,11 +396,11 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
    * @return 当前更新版本
    */
   private long updateLocal(Map<Integer, Set<Long>> deleteBaseMap,
-      Map<Integer, Set<Long>> deleteConfMap,
-      Map<Integer, Map<Long, BaikalBase>> activeChangeBaseMap,
-      Map<Integer, Map<Long, BaikalBase>> waitBaseMap,
-      Map<Integer, Map<Long, BaikalConf>> activeChangeConfMap,
-      Map<Integer, Map<Long, BaikalConf>> waitConfMap) {
+                           Map<Integer, Set<Long>> deleteConfMap,
+                           Map<Integer, Map<Long, BaikalBase>> activeChangeBaseMap,
+                           Map<Integer, Map<Long, BaikalBase>> waitBaseMap,
+                           Map<Integer, Map<Long, BaikalConf>> activeChangeConfMap,
+                           Map<Integer, Map<Long, BaikalConf>> waitConfMap) {
     synchronized (LOCK) {
       for (Map.Entry<Integer, Set<Long>> entry : deleteConfMap.entrySet()) {
         for (Long id : entry.getValue()) {
@@ -490,7 +491,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
         } else {
           confWaitMap.computeIfAbsent(conf.getApp(), k -> new HashMap<>()).put(conf.getId(), conf);
         }
-        if(isLeaf(conf.getType())) {
+        if (isLeaf(conf.getType())) {
           Map<Byte, Map<String, Integer>> map = leafClassMap.get(conf.getApp());
           Map<String, Integer> classMap;
           if (map == null) {
@@ -501,11 +502,11 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
             classMap.put(conf.getConfName(), 0);
           } else {
             classMap = map.get(conf.getType());
-            if(classMap == null){
+            if (classMap == null) {
               classMap = new HashMap<>();
               map.put(conf.getType(), classMap);
               classMap.put(conf.getConfName(), 0);
-            }else {
+            } else {
               classMap.putIfAbsent(conf.getConfName(), 0);
             }
           }
@@ -516,7 +517,7 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
     lastUpdateTime = now;
   }
 
-  private boolean isLeaf(byte type){
+  private boolean isLeaf(byte type) {
     return type == NodeTypeEnum.LEAF_FLOW.getType() || type == NodeTypeEnum.LEAF_NONE.getType() || type == NodeTypeEnum.LEAF_RESULT.getType();
   }
 
@@ -654,13 +655,13 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
     }
   }
 
-  private BaikalBaseDto convert(BaikalBase base){
+  private BaikalBaseDto convert(BaikalBase base) {
     BaikalBaseDto baseDto = new BaikalBaseDto();
     baseDto.setConfId(base.getConfId());
     baseDto.setDebug(base.getDebug());
     baseDto.setId(base.getId());
-    baseDto.setStart(base.getStart() == null?0:base.getStart().getTime());
-    baseDto.setEnd(base.getEnd() == null?0:base.getEnd().getTime());
+    baseDto.setStart(base.getStart() == null ? 0 : base.getStart().getTime());
+    baseDto.setEnd(base.getEnd() == null ? 0 : base.getEnd().getTime());
     baseDto.setTimeType(base.getTimeType());
     baseDto.setPriority(base.getPriority());
     baseDto.setScenes(base.getScenes());
@@ -668,13 +669,13 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
     return baseDto;
   }
 
-  private BaikalConfDto convert(BaikalConf conf){
+  private BaikalConfDto convert(BaikalConf conf) {
     BaikalConfDto confDto = new BaikalConfDto();
     confDto.setForwardId(conf.getForwardId());
     confDto.setDebug(conf.getDebug());
     confDto.setId(conf.getId());
-    confDto.setStart(conf.getStart() == null?0:conf.getStart().getTime());
-    confDto.setEnd(conf.getEnd() == null?0:conf.getEnd().getTime());
+    confDto.setStart(conf.getStart() == null ? 0 : conf.getStart().getTime());
+    confDto.setEnd(conf.getEnd() == null ? 0 : conf.getEnd().getTime());
     confDto.setTimeType(conf.getTimeType());
     confDto.setComplex(conf.getComplex());
     confDto.setSonIds(conf.getSonIds());

@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     /**自定义将jackson转换器变成fastjson*/
     FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
     FastJsonConfig fastJsonConfig = new FastJsonConfig();
-    List<MediaType> fastMediaTypes =  new ArrayList<>();
+    List<MediaType> fastMediaTypes = new ArrayList<>();
     fastMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
     fastConverter.setSupportedMediaTypes(fastMediaTypes);
     fastConverter.setFastJsonConfig(fastJsonConfig);

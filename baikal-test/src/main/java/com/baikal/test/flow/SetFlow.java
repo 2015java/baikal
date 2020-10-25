@@ -30,20 +30,20 @@ public class SetFlow extends BaseLeafRoamFlow {
    */
   @Override
   protected boolean doRoamFlow(BaikalRoam roam) {
-    if(set == null){
+    if (set == null) {
       return false;
     }
     Set<Object> sets = roam.getUnion(set);
-    if(CollectionUtils.isEmpty(sets)){
+    if (CollectionUtils.isEmpty(sets)) {
       return false;
     }
     return sets.contains(roam.getUnion(key));
   }
 
   public void setSet(Object set) {
-    if(set instanceof JSONArray){
+    if (set instanceof JSONArray) {
       this.set = new HashSet<>((Collection<?>) set);
-    }else {
+    } else {
       this.set = set;
     }
   }

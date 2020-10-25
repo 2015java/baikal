@@ -19,7 +19,7 @@ import java.util.Map;
 public class TestController {
 
   @RequestMapping(value = "/test", method = RequestMethod.POST)
-  public String test(@RequestBody Map map){
+  public String test(@RequestBody Map map) {
     BaikalPack pack = JSON.parseObject(JSON.toJSONString(map), BaikalPack.class);
     return JSON.toJSONString(BaikalClient.processCxt(pack));
   }

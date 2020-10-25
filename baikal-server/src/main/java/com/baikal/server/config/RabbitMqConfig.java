@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
   @Bean
-  public DirectExchange updateExchange(){
+  public DirectExchange updateExchange() {
     return new DirectExchange(Constant.getUpdateExchange());
   }
 
   @Bean
-  public DirectExchange showConfExchange(){
+  public DirectExchange showConfExchange() {
     return new DirectExchange(Constant.getShowConfExchange());
   }
 }

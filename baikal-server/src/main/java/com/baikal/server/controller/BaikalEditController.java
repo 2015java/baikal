@@ -78,13 +78,13 @@ public class BaikalEditController {
   @RequestMapping(value = "/baikal/topro", method = RequestMethod.POST)
   public WebResult toPro(@RequestBody Map map) {
     WebResult result = new WebResult();
-    if(!"1".equals(environmentId)){
+    if (!"1".equals(environmentId)) {
       int code = HttpRequest.post("http://127.0.0.1/baikal-server/baikal/conf/import")
-              .connectTimeout(5000)
-              .readTimeout(5000)
-              .header("Content-Type", "application/json; charset=utf-8")
-              .send(JSON.toJSONString(map))
-              .code();
+          .connectTimeout(5000)
+          .readTimeout(5000)
+          .header("Content-Type", "application/json; charset=utf-8")
+          .send(JSON.toJSONString(map))
+          .code();
       result.setMsg(String.valueOf(code));
     }
     return result;

@@ -17,6 +17,7 @@ public interface BaikalServerService {
 
   /**
    * 根据app获取生效中的Conf
+   *
    * @param app
    * @return
    */
@@ -24,6 +25,7 @@ public interface BaikalServerService {
 
   /**
    * 根据app获取生效中的base
+   *
    * @param app
    * @return
    */
@@ -31,6 +33,7 @@ public interface BaikalServerService {
 
   /**
    * 根据app获取初始化json
+   *
    * @param app
    * @return
    */
@@ -38,6 +41,7 @@ public interface BaikalServerService {
 
   /**
    * 获取所有的activeBase-从缓存
+   *
    * @param app
    * @return
    */
@@ -45,6 +49,7 @@ public interface BaikalServerService {
 
   /**
    * 获取所有的active-从库里
+   *
    * @param app
    * @return
    */
@@ -52,6 +57,7 @@ public interface BaikalServerService {
 
   /**
    * 根据confId获取配置信息
+   *
    * @param app
    * @param confId
    * @return
@@ -63,4 +69,4 @@ public interface BaikalServerService {
   void updateByEdit();
 
   Set<Integer> getAppSet();
-  }
+}

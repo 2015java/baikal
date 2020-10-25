@@ -42,7 +42,7 @@ public final class BaikalUpdateListener implements MessageListener {
     }
   }
 
-  private void handleBeforeInitMessage(Message message){
+  private void handleBeforeInitMessage(Message message) {
     String json = new String(message.getBody());
     BaikalTransferDto baikalInfo = JSON.parseObject(json, BaikalTransferDto.class);
     if (baikalInfo.getVersion() > initVersion) {

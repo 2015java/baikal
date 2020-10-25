@@ -32,7 +32,7 @@ public class SetFlow extends BaseLeafRoamFlow {
   @Override
   protected boolean doRoamFlow(BaikalRoam roam) {
     Collection<Object> sets = roam.getUnion(set);
-    if(sets == null || sets.isEmpty()){
+    if (sets == null || sets.isEmpty()) {
       return false;
     }
     return sets.contains(roam.getUnion(key));

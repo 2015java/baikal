@@ -88,7 +88,7 @@ public final class BaikalHandler {
     return this.baikalId;
   }
 
-  public long findBaikalId(){
+  public long findBaikalId() {
     return this.baikalId;
   }
 

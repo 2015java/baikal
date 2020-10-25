@@ -5,13 +5,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by kowalski.zhang on 2018/9/6
+ *
  * @author kowalski
  */
 @RestController
 public class WebController {
 
   @RequestMapping("/hello")
-  public String hello(){
+  public String hello() {
     return "Hello World~";
   }
 }

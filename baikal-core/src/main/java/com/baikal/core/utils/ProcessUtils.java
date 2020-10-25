@@ -70,13 +70,14 @@ public final class ProcessUtils {
 
   /**
    * 拒绝执行信息
+   *
    * @param sb
    * @param node
    */
   public static void collectRejectInfo(StringBuilder sb, BaseNode node) {
     if (node.isBaikalNodeDebug()) {
       String state;
-      switch (node.getBaikalRejectState()){
+      switch (node.getBaikalRejectState()) {
         case NONE:
           state = "R-N";
           break;

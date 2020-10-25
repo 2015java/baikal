@@ -11,7 +11,7 @@
     <File>/logs/baikal/baikal-test.log</File>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <fileNamePattern>baikal-test.log.%d.%i</fileNamePattern>
-      <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
         <!-- or whenever the file size reaches 128 MB -->
         <maxFileSize>128 MB</maxFileSize>
       </timeBasedFileNamingAndTriggeringPolicy>
@@ -24,7 +24,7 @@
     </encoder>
   </appender>
   <root level="info">
-    <appender-ref ref="STDOUT" />
-    <appender-ref ref="FILE" />
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="FILE"/>
   </root>
 </configuration>

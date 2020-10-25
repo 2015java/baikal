@@ -38,7 +38,9 @@ public class BaikalClientConfig {
 
   @Value("${baikal.app:}")
   private Integer app;
-  /**等待初始化返回时间 默认10s*/
+  /**
+   * 等待初始化返回时间 默认10s
+   */
   @Value("${baikal.init.reply.timeout:10000}")
   private int timeout;
 
@@ -106,7 +108,7 @@ public class BaikalClientConfig {
   public SimpleMessageListenerContainer baikalShowConfMessageContainer(
       @Qualifier("baikalShowConfQueue") Queue baikalShowConfQueue,
       @Qualifier("baikalConnectionFactory") ConnectionFactory baikalConnectionFactory,
-      @Qualifier("baikalRabbitTemplate")RabbitTemplate baikalRabbitTemplate) {
+      @Qualifier("baikalRabbitTemplate") RabbitTemplate baikalRabbitTemplate) {
     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(baikalConnectionFactory);
     container.setQueues(baikalShowConfQueue);
     container.setExposeListenerChannel(true);
@@ -136,7 +138,7 @@ public class BaikalClientConfig {
   }
 
   @Bean
-  public BaikalMockListener baikalMockListener(){
+  public BaikalMockListener baikalMockListener() {
     return new BaikalMockListener();
   }
 
@@ -156,14 +158,14 @@ public class BaikalClientConfig {
   }
 
   @Bean(name = "baikalRabbitTemplate")
-  public RabbitTemplate baikalRabbitTemplate(@Qualifier("baikalConnectionFactory") ConnectionFactory baikalConnectionFactory){
+  public RabbitTemplate baikalRabbitTemplate(@Qualifier("baikalConnectionFactory") ConnectionFactory baikalConnectionFactory) {
     RabbitTemplate baikalRabbitTemplate = new RabbitTemplate(baikalConnectionFactory);
     baikalRabbitTemplate.setReplyTimeout(timeout);
     return baikalRabbitTemplate;
   }
 
   @Bean(name = "baikalAmqpAdmin")
-  public AmqpAdmin baikalAmqpAdmin(@Qualifier("baikalConnectionFactory") ConnectionFactory baikalConnectionFactory){
+  public AmqpAdmin baikalAmqpAdmin(@Qualifier("baikalConnectionFactory") ConnectionFactory baikalConnectionFactory) {
     return new RabbitAdmin(baikalConnectionFactory);
   }
 }

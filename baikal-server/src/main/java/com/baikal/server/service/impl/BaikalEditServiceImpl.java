@@ -131,8 +131,8 @@ public class BaikalEditServiceImpl implements BaikalEditService {
             BaikalConf conf = new BaikalConf();
             conf.setDebug(confVo.getDebug() ? (byte) 1 : (byte) 0);
             conf.setTimeType(confVo.getTimeType());
-            conf.setStart(confVo.getStart() == null?null:new Date(confVo.getStart()));
-            conf.setEnd(confVo.getEnd() == null?null:new Date(confVo.getEnd()));
+            conf.setStart(confVo.getStart() == null ? null : new Date(confVo.getStart()));
+            conf.setEnd(confVo.getEnd() == null ? null : new Date(confVo.getEnd()));
             conf.setInverse(confVo.getInverse() ? (byte) 1 : (byte) 0);
             conf.setType(confVo.getNodeType());
             conf.setName(StringUtils.isEmpty(confVo.getName()) ? "" : confVo.getName());
@@ -155,15 +155,15 @@ public class BaikalEditServiceImpl implements BaikalEditService {
             if (confVo.getNodeId() != null) {
               /*从已知节点ID添加*/
               operateConf.setSonIds(StringUtils.isEmpty(operateConf.getSonIds()) ?
-                      String.valueOf(confVo.getNodeId()) :
-                      operateConf.getSonIds() + "," + confVo.getNodeId());
+                  String.valueOf(confVo.getNodeId()) :
+                  operateConf.getSonIds() + "," + confVo.getNodeId());
             } else {
               BaikalConf createConf = new BaikalConf();
               createConf.setDebug(confVo.getDebug() ? (byte) 1 : (byte) 0);
               createConf.setInverse(confVo.getInverse() ? (byte) 1 : (byte) 0);
               createConf.setTimeType(confVo.getTimeType());
-              createConf.setStart(confVo.getStart() == null?null:new Date(confVo.getStart()));
-              createConf.setEnd(confVo.getEnd() == null?null:new Date(confVo.getEnd()));
+              createConf.setStart(confVo.getStart() == null ? null : new Date(confVo.getStart()));
+              createConf.setEnd(confVo.getEnd() == null ? null : new Date(confVo.getEnd()));
               createConf.setApp(app);
               createConf.setType(confVo.getNodeType());
               createConf.setName(StringUtils.isEmpty(confVo.getName()) ? "" : confVo.getName());
@@ -174,8 +174,8 @@ public class BaikalEditServiceImpl implements BaikalEditService {
               createConf.setUpdateAt(new Date());
               confMapper.insertSelective(createConf);
               operateConf.setSonIds(StringUtils.isEmpty(operateConf.getSonIds()) ?
-                      String.valueOf(createConf.getId()) :
-                      operateConf.getSonIds() + "," + createConf.getId());
+                  String.valueOf(createConf.getId()) :
+                  operateConf.getSonIds() + "," + createConf.getId());
             }
             operateConf.setUpdateAt(new Date());
             confMapper.updateByExampleSelective(operateConf, confExample);
@@ -191,8 +191,8 @@ public class BaikalEditServiceImpl implements BaikalEditService {
             BaikalConf operateConf = confList.get(0);
             operateConf.setDebug(confVo.getDebug() ? (byte) 1 : (byte) 0);
             operateConf.setTimeType(confVo.getTimeType());
-            operateConf.setStart(confVo.getStart() == null?null:new Date(confVo.getStart()));
-            operateConf.setEnd(confVo.getEnd() == null?null:new Date(confVo.getEnd()));
+            operateConf.setStart(confVo.getStart() == null ? null : new Date(confVo.getStart()));
+            operateConf.setEnd(confVo.getEnd() == null ? null : new Date(confVo.getEnd()));
             operateConf.setInverse(confVo.getInverse() ? (byte) 1 : (byte) 0);
             operateConf.setName(StringUtils.isEmpty(confVo.getName()) ? "" : confVo.getName());
             if (!isRelation(confVo)) {
@@ -276,8 +276,8 @@ public class BaikalEditServiceImpl implements BaikalEditService {
               createConf.setDebug(confVo.getDebug() ? (byte) 1 : (byte) 0);
               createConf.setInverse(confVo.getInverse() ? (byte) 1 : (byte) 0);
               createConf.setTimeType(confVo.getTimeType());
-              createConf.setStart(confVo.getStart() == null?null:new Date(confVo.getStart()));
-              createConf.setEnd(confVo.getEnd() == null?null:new Date(confVo.getEnd()));
+              createConf.setStart(confVo.getStart() == null ? null : new Date(confVo.getStart()));
+              createConf.setEnd(confVo.getEnd() == null ? null : new Date(confVo.getEnd()));
               createConf.setType(confVo.getNodeType());
               createConf.setApp(app);
               createConf.setName(StringUtils.isEmpty(confVo.getName()) ? "" : confVo.getName());
@@ -307,8 +307,8 @@ public class BaikalEditServiceImpl implements BaikalEditService {
 
   public static boolean isRelation(Byte type) {
     return type == NodeTypeEnum.NONE.getType() || type == NodeTypeEnum.ALL.getType()
-            || type == NodeTypeEnum.AND.getType() || type == NodeTypeEnum.TRUE.getType()
-            || type == NodeTypeEnum.ANY.getType();
+        || type == NodeTypeEnum.AND.getType() || type == NodeTypeEnum.TRUE.getType()
+        || type == NodeTypeEnum.ANY.getType();
   }
 
   /**
@@ -373,7 +373,7 @@ public class BaikalEditServiceImpl implements BaikalEditService {
     pushData.setBase(base);
     Long confId = base.getConfId();
     Object obj = amqpTemplate.convertSendAndReceive(Constant.getShowConfExchange(), String.valueOf(base.getApp()),
-            String.valueOf(baikalId));
+        String.valueOf(baikalId));
     if (obj != null) {
       String json = (String) obj;
       if (!StringUtils.isEmpty(json)) {
@@ -473,7 +473,7 @@ public class BaikalEditServiceImpl implements BaikalEditService {
     pushData.setBase(base);
     Long confId = base.getConfId();
     Object obj = amqpTemplate.convertSendAndReceive(Constant.getShowConfExchange(), String.valueOf(base.getApp()),
-            String.valueOf(baikalId));
+        String.valueOf(baikalId));
     if (obj != null) {
       String json = (String) obj;
       if (!StringUtils.isEmpty(json)) {

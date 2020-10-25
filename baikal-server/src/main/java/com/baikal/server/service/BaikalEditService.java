@@ -11,12 +11,14 @@ public interface BaikalEditService {
 
   /**
    * get base
+   *
    * @param app
    * @param pageIndex
    * @param pageSize
    * @return
    */
   WebResult getBase(Integer app, Integer pageIndex, Integer pageSize);
+
   /**
    * 编辑base
    *
@@ -27,6 +29,7 @@ public interface BaikalEditService {
 
   /**
    * 编辑Conf
+   *
    * @param app
    * @param type
    * @param baikalId
@@ -46,6 +49,7 @@ public interface BaikalEditService {
 
   /**
    * 发布
+   *
    * @param app
    * @param baikalId
    * @param reason
@@ -55,6 +59,7 @@ public interface BaikalEditService {
 
   /**
    * 发布历史
+   *
    * @param app
    * @param baikalId
    * @return
@@ -63,6 +68,7 @@ public interface BaikalEditService {
 
   /**
    * 导出数据
+   *
    * @param baikalId
    * @param pushId
    * @return
@@ -71,6 +77,7 @@ public interface BaikalEditService {
 
   /**
    * 回滚
+   *
    * @param pushId
    * @return
    */
@@ -78,6 +85,7 @@ public interface BaikalEditService {
 
   /**
    * 导入数据
+   *
    * @param data
    * @return
    */

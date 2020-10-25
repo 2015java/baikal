@@ -32,14 +32,14 @@ public class ComparableFlow extends BaseLeafRoamFlow {
   @Override
   protected boolean doRoamFlow(BaikalRoam roam) {
     Comparable<Object> keyValue = roam.getUnion(key);
-    if(keyValue == null && code != 0){
+    if (keyValue == null && code != 0) {
       return false;
     }
     Comparable<Object> value = roam.getUnion(score);
-    if(value == null){
+    if (value == null) {
       return code == 0 && keyValue == null;
     }
-    if(keyValue == null){
+    if (keyValue == null) {
       return false;
     }
     return keyValue.compareTo(value) == code;
