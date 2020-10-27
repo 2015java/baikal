@@ -13,16 +13,14 @@ import java.util.Collection;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SetFlow extends BaseLeafRoamFlow {
+public class ContainsFlow extends BaseLeafRoamFlow {
 
+  private Object key;
   /***
    * Collection
    * eg:Set[1,2]
    */
-  private Object set;
-
-  private Object key;
-
+  private Object collection;
   /**
    * 叶子节点流程处理
    *
@@ -31,7 +29,7 @@ public class SetFlow extends BaseLeafRoamFlow {
    */
   @Override
   protected boolean doRoamFlow(BaikalRoam roam) {
-    Collection<Object> sets = roam.getUnion(set);
+    Collection<Object> sets = roam.getUnion(collection);
     if (sets == null || sets.isEmpty()) {
       return false;
     }

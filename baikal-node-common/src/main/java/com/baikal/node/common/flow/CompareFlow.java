@@ -11,11 +11,11 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ComparableFlow extends BaseLeafRoamFlow {
+public class CompareFlow extends BaseLeafRoamFlow {
 
   private Object key;
 
-  private Object score;
+  private Object another;
   /**
    * 1判大(默认)
    * 0判等
@@ -35,13 +35,13 @@ public class ComparableFlow extends BaseLeafRoamFlow {
     if (keyValue == null && code != 0) {
       return false;
     }
-    Comparable<Object> value = roam.getUnion(score);
-    if (value == null) {
+    Comparable<Object> anotherValue = roam.getUnion(another);
+    if (anotherValue == null) {
       return code == 0 && keyValue == null;
     }
     if (keyValue == null) {
       return false;
     }
-    return keyValue.compareTo(value) == code;
+    return keyValue.compareTo(anotherValue) == code;
   }
 }
