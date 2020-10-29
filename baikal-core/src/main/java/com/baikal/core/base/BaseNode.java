@@ -43,6 +43,7 @@ public abstract class BaseNode {
   /**
    * 前置节点
    * 如果前置节点返回FALSE,节点的执行将被拒绝
+   * forward节点可以理解为是用AND连接的forward和this
    */
   private BaseNode baikalForward;
   /**
@@ -53,11 +54,6 @@ public abstract class BaseNode {
    * 事务 默认不开启
    */
   private boolean baikalTransaction;
-  /**
-   * 执行被拒绝默认False
-   * 因为前置节点是由一个AND改装而来,因此默认语义不变,支持修改
-   */
-  private NodeRunStateEnum baikalRejectState = NodeRunStateEnum.FALSE;
 
   /**
    * process
@@ -73,9 +69,11 @@ public abstract class BaseNode {
     }
     long start = System.currentTimeMillis();
     if (baikalForward != null) {
-      if (baikalForward.process(cxt) != NodeRunStateEnum.FALSE) {
+      NodeRunStateEnum forwardRes = baikalForward.process(cxt);
+      if (forwardRes != NodeRunStateEnum.FALSE) {
         NodeRunStateEnum res = processNode(cxt);
         ProcessUtils.collectInfo(cxt.getProcessInfo(), this, start, res);
+        res = forwardRes == NodeRunStateEnum.NONE ? res : (res == NodeRunStateEnum.NONE ? NodeRunStateEnum.TRUE : res);
         return baikalInverse ?
             res == NodeRunStateEnum.TRUE ?
                 NodeRunStateEnum.FALSE :
@@ -83,7 +81,7 @@ public abstract class BaseNode {
             res;
       }
       ProcessUtils.collectRejectInfo(cxt.getProcessInfo(), this);
-      return this.baikalRejectState;
+      return NodeRunStateEnum.FALSE;
     }
     NodeRunStateEnum res = processNode(cxt);
     ProcessUtils.collectInfo(cxt.getProcessInfo(), this, start, res);
