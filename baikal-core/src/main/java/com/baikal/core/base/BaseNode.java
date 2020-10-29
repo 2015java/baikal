@@ -72,8 +72,8 @@ public abstract class BaseNode {
       NodeRunStateEnum forwardRes = baikalForward.process(cxt);
       if (forwardRes != NodeRunStateEnum.FALSE) {
         NodeRunStateEnum res = processNode(cxt);
-        ProcessUtils.collectInfo(cxt.getProcessInfo(), this, start, res);
         res = forwardRes == NodeRunStateEnum.NONE ? res : (res == NodeRunStateEnum.NONE ? NodeRunStateEnum.TRUE : res);
+        ProcessUtils.collectInfo(cxt.getProcessInfo(), this, start, res);
         return baikalInverse ?
             res == NodeRunStateEnum.TRUE ?
                 NodeRunStateEnum.FALSE :
