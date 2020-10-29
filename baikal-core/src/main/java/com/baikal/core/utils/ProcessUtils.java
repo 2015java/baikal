@@ -76,23 +76,8 @@ public final class ProcessUtils {
    */
   public static void collectRejectInfo(StringBuilder sb, BaseNode node) {
     if (node.isBaikalNodeDebug()) {
-      String state;
-      switch (node.getBaikalRejectState()) {
-        case NONE:
-          state = "R-N";
-          break;
-        case TRUE:
-          state = "R-T";
-          break;
-        case FALSE:
-          state = "R-F";
-          break;
-        default:
-          state = "R-?";
-          break;
-      }
       sb.append('[').append(node.findBaikalNodeId()).append(':').append(node.getClass().getSimpleName()).append(':')
-          .append(state).append(']');
+          .append("R-F").append(']');
     }
   }
 }
