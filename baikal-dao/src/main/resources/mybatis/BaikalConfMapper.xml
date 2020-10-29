@@ -416,9 +416,9 @@
       <if test="record.confField != null">
         conf_field = #{record.confField,jdbcType=VARCHAR},
       </if>
-      <if test="record.forwardId != null">
+<!--      <if test="record.forwardId != null">-->
         forward_id = #{record.forwardId,jdbcType=BIGINT},
-      </if>
+<!--      </if>-->
       <if test="record.timeType != null">
         time_type = #{record.timeType,jdbcType=TINYINT},
       </if>
