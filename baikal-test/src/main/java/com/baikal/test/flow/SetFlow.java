@@ -1,6 +1,5 @@
 package com.baikal.test.flow;
 
-import com.alibaba.fastjson.JSONArray;
 import com.baikal.core.context.BaikalRoam;
 import com.baikal.core.leaf.roam.BaseLeafRoamFlow;
 import lombok.Data;
@@ -41,7 +40,7 @@ public class SetFlow extends BaseLeafRoamFlow {
   }
 
   public void setSet(Object set) {
-    if (set instanceof JSONArray) {
+    if (set instanceof Collection<?>) {
       this.set = new HashSet<>((Collection<?>) set);
     } else {
       this.set = set;
