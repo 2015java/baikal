@@ -10,7 +10,6 @@ import com.baikal.test.result.AmountResult;
 import com.baikal.test.result.PointResult;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
 
 import javax.annotation.PostConstruct;
 
