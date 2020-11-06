@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @Service
-@DependsOn("baikalBeanUtils")
+@DependsOn("baikalBeanFactory")
 public final class BaikalClientInit implements InitializingBean {
 
   @Value("${baikal.app}")

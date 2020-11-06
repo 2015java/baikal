@@ -17,6 +17,7 @@ baikal:
     password: password
 test:
   value: 123
+environment: dev
 
 
 
