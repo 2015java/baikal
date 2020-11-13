@@ -23,16 +23,6 @@ public enum NodeRunStateEnum {
    */
   NONE((byte) 2);
 
-  private final byte state;
-
-  NodeRunStateEnum(byte state) {
-    this.state = state;
-  }
-
-  public byte getState() {
-    return state;
-  }
-
   private static final Map<Byte, NodeRunStateEnum> MAP = new HashMap<>();
 
   static {
@@ -41,7 +31,17 @@ public enum NodeRunStateEnum {
     }
   }
 
+  private final byte state;
+
+  NodeRunStateEnum(byte state) {
+    this.state = state;
+  }
+
   public static NodeRunStateEnum getEnum(byte state) {
     return MAP.get(state);
+  }
+
+  public byte getState() {
+    return state;
   }
 }

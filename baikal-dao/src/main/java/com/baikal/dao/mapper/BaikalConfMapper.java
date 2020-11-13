@@ -2,10 +2,9 @@ package com.baikal.dao.mapper;
 
 import com.baikal.dao.model.BaikalConf;
 import com.baikal.dao.model.BaikalConfExample;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface BaikalConfMapper {
   /**

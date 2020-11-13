@@ -17,16 +17,6 @@ public enum RequestTypeEnum {
    */
   PREVIEW((byte) 2);
 
-  private final byte type;
-
-  RequestTypeEnum(byte type) {
-    this.type = type;
-  }
-
-  public byte getType() {
-    return type;
-  }
-
   private static final Map<Byte, RequestTypeEnum> MAP = new HashMap<>();
 
   static {
@@ -35,7 +25,17 @@ public enum RequestTypeEnum {
     }
   }
 
+  private final byte type;
+
+  RequestTypeEnum(byte type) {
+    this.type = type;
+  }
+
   public static RequestTypeEnum getEnum(byte type) {
     return MAP.get(type);
+  }
+
+  public byte getType() {
+    return type;
   }
 }

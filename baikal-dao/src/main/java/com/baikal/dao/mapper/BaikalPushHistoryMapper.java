@@ -2,10 +2,9 @@ package com.baikal.dao.mapper;
 
 import com.baikal.dao.model.BaikalPushHistory;
 import com.baikal.dao.model.BaikalPushHistoryExample;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface BaikalPushHistoryMapper {
   /**

@@ -42,16 +42,6 @@ public enum TimeSuffixEnum {
    */
   YEAR((byte) 8);
 
-  private final byte type;
-
-  TimeSuffixEnum(byte type) {
-    this.type = type;
-  }
-
-  public byte getType() {
-    return type;
-  }
-
   private static final Map<Byte, TimeSuffixEnum> MAP = new HashMap<>();
 
   static {
@@ -60,7 +50,17 @@ public enum TimeSuffixEnum {
     }
   }
 
+  private final byte type;
+
+  TimeSuffixEnum(byte type) {
+    this.type = type;
+  }
+
   public static TimeSuffixEnum getEnum(byte type) {
     return MAP.get(type);
+  }
+
+  public byte getType() {
+    return type;
   }
 }

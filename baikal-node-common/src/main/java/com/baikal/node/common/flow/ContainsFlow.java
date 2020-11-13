@@ -21,6 +21,7 @@ public class ContainsFlow extends BaseLeafRoamFlow {
    * eg:Set[1,2]
    */
   private Object collection;
+
   /**
    * 叶子节点流程处理
    *

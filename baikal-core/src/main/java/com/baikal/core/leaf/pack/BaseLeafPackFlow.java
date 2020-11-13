@@ -1,10 +1,12 @@
 package com.baikal.core.leaf.pack;
 
-import com.baikal.core.leaf.base.BaseLeafFlow;
 import com.baikal.core.context.BaikalContext;
 import com.baikal.core.context.BaikalPack;
+import com.baikal.core.leaf.base.BaseLeafFlow;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author kowalski
@@ -14,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public abstract class BaseLeafPackFlow extends BaseLeafFlow {
 
   @Override
-  protected boolean doFlow(BaikalContext cxt) {
+  protected boolean doFlow(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     return doPackFlow(cxt.getPack());
   }
 
@@ -24,5 +26,5 @@ public abstract class BaseLeafPackFlow extends BaseLeafFlow {
    * @param pack
    * @return
    */
-  protected abstract boolean doPackFlow(BaikalPack pack);
+  protected abstract boolean doPackFlow(BaikalPack pack) throws InvocationTargetException, IllegalAccessException;
 }

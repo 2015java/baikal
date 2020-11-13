@@ -41,16 +41,6 @@ public enum TimeTypeEnum {
    */
   TEST_BETWEEN((byte) 7);
 
-  private final byte type;
-
-  TimeTypeEnum(byte type) {
-    this.type = type;
-  }
-
-  public byte getType() {
-    return type;
-  }
-
   private static final Map<Byte, TimeTypeEnum> MAP = new HashMap<>();
 
   static {
@@ -59,7 +49,17 @@ public enum TimeTypeEnum {
     }
   }
 
+  private final byte type;
+
+  TimeTypeEnum(byte type) {
+    this.type = type;
+  }
+
   public static TimeTypeEnum getEnum(byte type) {
     return MAP.get(type);
+  }
+
+  public byte getType() {
+    return type;
   }
 }

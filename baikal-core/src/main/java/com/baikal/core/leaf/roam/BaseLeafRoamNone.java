@@ -6,6 +6,8 @@ import com.baikal.core.leaf.base.BaseLeafNone;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  */
@@ -14,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public abstract class BaseLeafRoamNone extends BaseLeafNone {
 
   @Override
-  protected void doNone(BaikalContext cxt) {
+  protected void doNone(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     doRoamNone(cxt.getPack().getRoam());
   }
 
@@ -24,5 +26,5 @@ public abstract class BaseLeafRoamNone extends BaseLeafNone {
    * @param roam
    * @return
    */
-  protected abstract void doRoamNone(BaikalRoam roam);
+  protected abstract void doRoamNone(BaikalRoam roam) throws InvocationTargetException, IllegalAccessException;
 }

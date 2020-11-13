@@ -17,16 +17,6 @@ public enum StatusEnum {
    */
   OFFLINE((byte) 0);
 
-  private final byte status;
-
-  StatusEnum(byte status) {
-    this.status = status;
-  }
-
-  public byte getStatus() {
-    return status;
-  }
-
   private static final Map<Byte, StatusEnum> MAP = new HashMap<>();
 
   static {
@@ -35,7 +25,17 @@ public enum StatusEnum {
     }
   }
 
+  private final byte status;
+
+  StatusEnum(byte status) {
+    this.status = status;
+  }
+
   public static StatusEnum getEnum(byte status) {
     return MAP.get(status);
+  }
+
+  public byte getStatus() {
+    return status;
   }
 }

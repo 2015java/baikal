@@ -11,11 +11,10 @@ import lombok.ToString;
 @ToString
 public final class BaikalContext {
 
-  public BaikalContext(long baikalId, BaikalPack pack) {
-    this.baikalId = baikalId;
-    this.pack = pack == null ? new BaikalPack() : pack;
-  }
-
+  /**
+   * 进入baikal开始执行的瞬间(cxt初始化瞬间)
+   */
+  private final long baikalTime = System.currentTimeMillis();
   /**
    * 执行的baikalId
    */
@@ -25,14 +24,9 @@ public final class BaikalContext {
    */
   private BaikalPack pack;
   /**
-   * 进入baikal开始执行的瞬间(cxt初始化瞬间)
-   */
-  private final long baikalTime = System.currentTimeMillis();
-  /**
    * 当前正在执行的节点ID
    */
   private long currentId;
-
   /**
    * 当前正在执行的节点的父节点ID
    */
@@ -49,4 +43,9 @@ public final class BaikalContext {
    * debug为true的节点执行过程信息
    */
   private StringBuilder processInfo = new StringBuilder();
+
+  public BaikalContext(long baikalId, BaikalPack pack) {
+    this.baikalId = baikalId;
+    this.pack = pack == null ? new BaikalPack() : pack;
+  }
 }

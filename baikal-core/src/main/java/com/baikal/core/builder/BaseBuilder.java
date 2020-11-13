@@ -12,6 +12,14 @@ public class BaseBuilder {
 
   private BaseNode node;
 
+  public BaseBuilder(BaseNode node) {
+    if (node.getBaikalTimeTypeEnum() == null) {
+      node.setBaikalTimeTypeEnum(TimeTypeEnum.NONE);
+    }
+    node.setBaikalNodeDebug(true);
+    this.node = node;
+  }
+
   public BaseNode build() {
     return node;
   }
@@ -49,13 +57,5 @@ public class BaseBuilder {
   public BaseBuilder debug() {
     this.node.setBaikalNodeDebug(true);
     return this;
-  }
-
-  public BaseBuilder(BaseNode node) {
-    if (node.getBaikalTimeTypeEnum() == null) {
-      node.setBaikalTimeTypeEnum(TimeTypeEnum.NONE);
-    }
-    node.setBaikalNodeDebug(true);
-    this.node = node;
   }
 }

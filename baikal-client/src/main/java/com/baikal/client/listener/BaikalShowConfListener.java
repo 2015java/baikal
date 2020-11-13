@@ -38,17 +38,17 @@ import java.util.Map;
 public class BaikalShowConfListener implements MessageListener {
 
   private static final SerializeConfig FAST_JSON_CONFIG;
+  private static final SpringBeanAndForwardFilter SPRING_BEAN_FILTER = new SpringBeanAndForwardFilter();
 
   static {
     FAST_JSON_CONFIG = new SerializeConfig();
     FAST_JSON_CONFIG.put(Long.class, BaikalLongCodec.getInstance());
   }
 
+  private final RabbitTemplate baikalRabbitTemplate;
   private Integer app;
-
   private String address;
-
-  private static final SpringBeanAndForwardFilter SPRING_BEAN_FILTER = new SpringBeanAndForwardFilter();
+  private MessageConverter messageConverter = new SimpleMessageConverter();
 
   public BaikalShowConfListener(RabbitTemplate baikalRabbitTemplate, MessageConverter messageConverter) {
     this.baikalRabbitTemplate = baikalRabbitTemplate;
@@ -63,10 +63,6 @@ public class BaikalShowConfListener implements MessageListener {
     this.app = app;
     this.baikalRabbitTemplate = baikalRabbitTemplate;
   }
-
-  private final RabbitTemplate baikalRabbitTemplate;
-
-  private MessageConverter messageConverter = new SimpleMessageConverter();
 
   private String getAddress() {
     address = address == null ? AddressUtils.getAddressPort() : address;

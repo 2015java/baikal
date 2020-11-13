@@ -4,20 +4,30 @@ import com.alibaba.fastjson.JSON;
 import com.baikal.common.enums.NodeTypeEnum;
 import com.baikal.common.enums.TimeTypeEnum;
 import com.baikal.common.model.BaikalConfDto;
+import com.baikal.core.annotation.BaikalParam;
+import com.baikal.core.base.BaseNode;
+import com.baikal.core.base.BaseRelation;
+import com.baikal.core.context.BaikalPack;
+import com.baikal.core.context.BaikalRoam;
 import com.baikal.core.leaf.base.BaseLeafFlow;
 import com.baikal.core.leaf.base.BaseLeafNone;
 import com.baikal.core.leaf.base.BaseLeafResult;
-import com.baikal.core.utils.BaikalBeanUtils;
-import com.baikal.core.utils.BaikalLinkedList;
-import com.baikal.core.base.BaseNode;
-import com.baikal.core.base.BaseRelation;
+import com.baikal.core.leaf.pack.BaseLeafPackFlow;
+import com.baikal.core.leaf.pack.BaseLeafPackNone;
+import com.baikal.core.leaf.pack.BaseLeafPackResult;
 import com.baikal.core.relation.AllRelation;
 import com.baikal.core.relation.AndRelation;
 import com.baikal.core.relation.AnyRelation;
 import com.baikal.core.relation.NoneRelation;
 import com.baikal.core.relation.TrueRelation;
+import com.baikal.core.utils.BaikalBeanUtils;
+import com.baikal.core.utils.BaikalLinkedList;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -240,47 +250,265 @@ public final class BaikalConfCache {
         || dto.getType() == NodeTypeEnum.ANY.getType();
   }
 
-  private static BaseNode convert(BaikalConfDto confDto) throws ClassNotFoundException {
+  private static BaseNode convert(BaikalConfDto confDto) throws ClassNotFoundException, NoSuchMethodException {
     switch (NodeTypeEnum.getEnum(confDto.getType())) {
       case LEAF_FLOW:
-        BaseLeafFlow flow = (BaseLeafFlow) JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            Class.forName(confDto.getConfName()));
+        BaseLeafFlow flow;
+        String flowFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField();
+        String flowConfNameFirst = confDto.getConfName().substring(0, 1);
+        if (flowConfNameFirst.equals("#") || flowConfNameFirst.equals("$")) {
+          String clzName;
+          Class<?> clz;
+          Object targetObj = null;
+          String methodName;
+          String logName;
+          if (flowConfNameFirst.equals("#")) {
+            String[] confNames = confDto.getConfName().split("#");
+            clzName = confNames[1];
+            methodName = confNames[2];
+            clz = Class.forName(clzName);
+            logName = "#" + clz.getSimpleName() + "#" + methodName;
+          } else {
+            String[] confNames = confDto.getConfName().split("\\$");
+            clzName = confNames[1];
+            methodName = confNames[2];
+            targetObj = BaikalBeanUtils.getBean(clzName);
+            if (targetObj == null) {
+              throw new ClassNotFoundException("bean named " + clzName + "not found");
+            }
+            clz = targetObj.getClass();
+            logName = "$" + clzName + "$" + methodName;
+          }
+          Method[] methods = clz.getDeclaredMethods();
+          Method targetMethod = null;
+          for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
+              targetMethod = method;
+              break;
+            }
+          }
+          if (targetMethod == null) {
+            throw new NoSuchMethodException(clzName + " have no method named " + methodName);
+          }
+          targetMethod.setAccessible(true);
+          if (targetObj == null && !Modifier.isStatic(targetMethod.getModifiers())) {
+            targetObj = JSON.parseObject(flowFiled, clz);
+            BaikalBeanUtils.autowireBean(targetObj);
+          }
+          Parameter[] params = targetMethod.getParameters();
+          int length = params.length;
+          String[] targetKeys = new String[length];
+          for (int i = 0; i < length; i++) {
+            Parameter parameter = params[i];
+            BaikalParam param = parameter.getAnnotation(BaikalParam.class);
+            targetKeys[i] = param == null ? methodName + "_" + i : param.value();
+          }
+          final Method finalTargetMethod = targetMethod;
+          final Object finalTargetObj = targetObj;
+          flow = new BaseLeafPackFlow() {
+            @Override
+            protected boolean doPackFlow(BaikalPack pack) throws InvocationTargetException, IllegalAccessException {
+              Object[] params = new Object[length];
+              BaikalRoam roam = pack.getRoam();
+              for (int i = 0; i < length; i++) {
+                String argvName = targetKeys[i];
+                if (argvName.equals("time") || argvName.equals("requestTime")) {
+                  params[i] = pack.getRequestTime();
+                }
+                params[i] = roam.getMulti(argvName);
+              }
+              if (finalTargetMethod.getReturnType() == boolean.class || finalTargetMethod.getReturnType() == Boolean.class) {
+                Boolean res = (Boolean) finalTargetMethod.invoke(finalTargetObj, params);
+                return res != null && res;
+              }
+              finalTargetMethod.invoke(finalTargetObj, params);
+              return true;
+            }
+          };
+          flow.setBaikalLogName(logName);
+        } else {
+          flow = (BaseLeafFlow) JSON.parseObject(flowFiled, Class.forName(confDto.getConfName()));
+          flow.setBaikalLogName(flow.getClass().getSimpleName());
+          BaikalBeanUtils.autowireBean(flow);
+        }
         flow.setBaikalNodeId(confDto.getId());
         flow.setBaikalNodeDebug(confDto.getDebug() == 1);
         flow.setBaikalInverse(confDto.getInverse() == 1);
         flow.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
         flow.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
         flow.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        BaikalBeanUtils.autowireBean(flow);
         return flow;
       case LEAF_RESULT:
-        BaseLeafResult result = (BaseLeafResult) JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            Class.forName(confDto.getConfName()));
+        BaseLeafResult result;
+        String resultFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField();
+        String resultConfNameFirst = confDto.getConfName().substring(0, 1);
+        if (resultConfNameFirst.equals("#") || resultConfNameFirst.equals("$")) {
+          String clzName;
+          Class<?> clz;
+          Object targetObj = null;
+          String methodName;
+          String logName;
+          if (resultConfNameFirst.equals("#")) {
+            String[] confNames = confDto.getConfName().split("#");
+            clzName = confNames[1];
+            methodName = confNames[2];
+            clz = Class.forName(clzName);
+            logName = "#" + clz.getSimpleName() + "#" + methodName;
+          } else {
+            String[] confNames = confDto.getConfName().split("\\$");
+            clzName = confNames[1];
+            methodName = confNames[2];
+            targetObj = BaikalBeanUtils.getBean(clzName);
+            if (targetObj == null) {
+              throw new ClassNotFoundException("bean named " + clzName + "not found");
+            }
+            clz = targetObj.getClass();
+            logName = "$" + clzName + "$" + methodName;
+          }
+          Method[] methods = clz.getDeclaredMethods();
+          Method targetMethod = null;
+          for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
+              targetMethod = method;
+              break;
+            }
+          }
+          if (targetMethod == null) {
+            throw new NoSuchMethodException(clzName + " have no method named " + methodName);
+          }
+          targetMethod.setAccessible(true);
+          if (targetObj == null && !Modifier.isStatic(targetMethod.getModifiers())) {
+            targetObj = JSON.parseObject(resultFiled, clz);
+            BaikalBeanUtils.autowireBean(targetObj);
+          }
+          Parameter[] params = targetMethod.getParameters();
+          int length = params.length;
+          String[] targetKeys = new String[length];
+          for (int i = 0; i < length; i++) {
+            Parameter parameter = params[i];
+            BaikalParam param = parameter.getAnnotation(BaikalParam.class);
+            targetKeys[i] = param == null ? methodName + "_" + i : param.value();
+          }
+          final Method finalTargetMethod = targetMethod;
+          final Object finalTargetObj = targetObj;
+          result = new BaseLeafPackResult() {
+            @Override
+            protected boolean doPackResult(BaikalPack pack) throws InvocationTargetException, IllegalAccessException {
+              Object[] params = new Object[length];
+              BaikalRoam roam = pack.getRoam();
+              for (int i = 0; i < length; i++) {
+                String argvName = targetKeys[i];
+                if (argvName.equals("time") || argvName.equals("requestTime")) {
+                  params[i] = pack.getRequestTime();
+                }
+                params[i] = roam.getMulti(argvName);
+              }
+              if (finalTargetMethod.getReturnType() == boolean.class || finalTargetMethod.getReturnType() == Boolean.class) {
+                Boolean res = (Boolean) finalTargetMethod.invoke(finalTargetObj, params);
+                return res != null && res;
+              }
+              finalTargetMethod.invoke(finalTargetObj, params);
+              return true;
+            }
+          };
+          result.setBaikalLogName(logName);
+        } else {
+          result = (BaseLeafResult) JSON.parseObject(resultFiled, Class.forName(confDto.getConfName()));
+          result.setBaikalLogName(result.getClass().getSimpleName());
+          BaikalBeanUtils.autowireBean(result);
+        }
         result.setBaikalNodeId(confDto.getId());
         result.setBaikalNodeDebug(confDto.getDebug() == 1);
         result.setBaikalInverse(confDto.getInverse() == 1);
         result.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
         result.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
         result.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        BaikalBeanUtils.autowireBean(result);
         return result;
       case LEAF_NONE:
-        BaseLeafNone none = (BaseLeafNone) JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            Class.forName(confDto.getConfName()));
+        BaseLeafNone none;
+        String noneFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField();
+        String noneConfNameFirst = confDto.getConfName().substring(0, 1);
+        if (noneConfNameFirst.equals("#") || noneConfNameFirst.equals("$")) {
+          String clzName;
+          Class<?> clz;
+          Object targetObj = null;
+          String methodName;
+          String logName;
+          if (noneConfNameFirst.equals("#")) {
+            String[] confNames = confDto.getConfName().split("#");
+            clzName = confNames[1];
+            methodName = confNames[2];
+            clz = Class.forName(clzName);
+            logName = "#" + clz.getSimpleName() + "#" + methodName;
+          } else {
+            String[] confNames = confDto.getConfName().split("\\$");
+            clzName = confNames[1];
+            methodName = confNames[2];
+            targetObj = BaikalBeanUtils.getBean(clzName);
+            if (targetObj == null) {
+              throw new ClassNotFoundException("bean named " + clzName + "not found");
+            }
+            clz = targetObj.getClass();
+            logName = "$" + clzName + "$" + methodName;
+          }
+          Method[] methods = clz.getDeclaredMethods();
+          Method targetMethod = null;
+          for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
+              targetMethod = method;
+              break;
+            }
+          }
+          if (targetMethod == null) {
+            throw new NoSuchMethodException(clzName + " have no method named " + methodName);
+          }
+          targetMethod.setAccessible(true);
+          if (targetObj == null && !Modifier.isStatic(targetMethod.getModifiers())) {
+            targetObj = JSON.parseObject(noneFiled, clz);
+            BaikalBeanUtils.autowireBean(targetObj);
+          }
+          Parameter[] params = targetMethod.getParameters();
+          int length = params.length;
+          String[] targetKeys = new String[length];
+          for (int i = 0; i < length; i++) {
+            Parameter parameter = params[i];
+            BaikalParam param = parameter.getAnnotation(BaikalParam.class);
+            targetKeys[i] = param == null ? methodName + "_" + i : param.value();
+          }
+          final Method finalTargetMethod = targetMethod;
+          final Object finalTargetObj = targetObj;
+          none = new BaseLeafPackNone() {
+            @Override
+            protected void doPackNone(BaikalPack pack) throws InvocationTargetException, IllegalAccessException {
+              Object[] params = new Object[length];
+              BaikalRoam roam = pack.getRoam();
+              for (int i = 0; i < length; i++) {
+                String argvName = targetKeys[i];
+                if (argvName.equals("time") || argvName.equals("requestTime")) {
+                  params[i] = pack.getRequestTime();
+                }
+                params[i] = roam.getMulti(argvName);
+              }
+              finalTargetMethod.invoke(finalTargetObj, params);
+            }
+          };
+          none.setBaikalLogName(logName);
+        } else {
+          none = (BaseLeafNone) JSON.parseObject(noneFiled, Class.forName(confDto.getConfName()));
+          none.setBaikalLogName(none.getClass().getSimpleName());
+          BaikalBeanUtils.autowireBean(none);
+        }
         none.setBaikalNodeId(confDto.getId());
         none.setBaikalNodeDebug(confDto.getDebug() == 1);
         none.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
         none.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
         none.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        BaikalBeanUtils.autowireBean(none);
         return none;
       case NONE:
         NoneRelation noneRelation = JSON.parseObject(
             confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
             NoneRelation.class);
+        noneRelation.setBaikalLogName("None");
         noneRelation.setBaikalNodeId(confDto.getId());
         noneRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
         noneRelation.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
@@ -291,6 +519,7 @@ public final class BaikalConfCache {
         AndRelation andRelation = JSON.parseObject(
             confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
             AndRelation.class);
+        andRelation.setBaikalLogName("And");
         andRelation.setBaikalNodeId(confDto.getId());
         andRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
         andRelation.setBaikalInverse(confDto.getInverse() == 1);
@@ -302,6 +531,7 @@ public final class BaikalConfCache {
         TrueRelation trueRelation = JSON.parseObject(
             confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
             TrueRelation.class);
+        trueRelation.setBaikalLogName("True");
         trueRelation.setBaikalNodeId(confDto.getId());
         trueRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
         trueRelation.setBaikalInverse(confDto.getInverse() == 1);
@@ -313,6 +543,7 @@ public final class BaikalConfCache {
         AllRelation allRelation = JSON.parseObject(
             confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
             AllRelation.class);
+        allRelation.setBaikalLogName("All");
         allRelation.setBaikalNodeId(confDto.getId());
         allRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
         allRelation.setBaikalInverse(confDto.getInverse() == 1);
@@ -324,6 +555,7 @@ public final class BaikalConfCache {
         AnyRelation anyRelation = JSON.parseObject(
             confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
             AnyRelation.class);
+        anyRelation.setBaikalLogName("Any");
         anyRelation.setBaikalNodeId(confDto.getId());
         anyRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
         anyRelation.setBaikalInverse(confDto.getInverse() == 1);
@@ -334,6 +566,7 @@ public final class BaikalConfCache {
       default:
         BaseNode baseNode = (BaseNode) JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
             Class.forName(confDto.getConfName()));
+        baseNode.setBaikalLogName(baseNode.getClass().getSimpleName());
         baseNode.setBaikalNodeId(confDto.getId());
         baseNode.setBaikalNodeDebug(confDto.getDebug() == 1);
         baseNode.setBaikalInverse(confDto.getInverse() == 1);

@@ -2,10 +2,9 @@ package com.baikal.dao.mapper;
 
 import com.baikal.dao.model.BaikalBase;
 import com.baikal.dao.model.BaikalBaseExample;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 
 public interface BaikalBaseMapper {
   /**

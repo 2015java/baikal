@@ -37,6 +37,17 @@ public class BaikalSpringBeanFactory implements BaikalBeanUtils.BaikalBeanFactor
   }
 
   /**
+   * 根据名称获取bean
+   *
+   * @param name beanName
+   * @return
+   */
+  @Override
+  public Object getBean(String name) {
+    return beanFactory.getBean(name);
+  }
+
+  /**
    * @param applicationContext
    * @throws BeansException
    */

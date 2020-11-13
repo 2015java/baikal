@@ -6,6 +6,8 @@ import com.baikal.core.base.BaseRelation;
 import com.baikal.core.context.BaikalContext;
 import com.baikal.core.utils.BaikalLinkedList;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  * 结果->TRUE关系
@@ -20,7 +22,7 @@ public final class TrueRelation extends BaseRelation {
    * @param cxt
    */
   @Override
-  protected NodeRunStateEnum processNode(BaikalContext cxt) {
+  protected NodeRunStateEnum processNode(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     BaikalLinkedList<BaseNode> children = this.getChildren();
     if (children == null || children.isEmpty()) {
       return NodeRunStateEnum.TRUE;

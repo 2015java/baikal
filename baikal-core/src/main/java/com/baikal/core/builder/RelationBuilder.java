@@ -16,6 +16,34 @@ import java.util.Arrays;
  */
 public class RelationBuilder extends BaseBuilder {
 
+  public RelationBuilder(BaseRelation relation) {
+    super(relation);
+  }
+
+  public RelationBuilder(RelationBuilder builder) {
+    super(builder.build());
+  }
+
+  public static RelationBuilder andRelation() {
+    return new RelationBuilder(new AndRelation());
+  }
+
+  public static RelationBuilder anyRelation() {
+    return new RelationBuilder(new AnyRelation());
+  }
+
+  public static RelationBuilder allRelation() {
+    return new RelationBuilder(new AllRelation());
+  }
+
+  public static RelationBuilder noneRelation() {
+    return new RelationBuilder(new NoneRelation());
+  }
+
+  public static RelationBuilder trueRelation() {
+    return new RelationBuilder(new TrueRelation());
+  }
+
   @Override
   public RelationBuilder forward(BaseNode forward) {
     return (RelationBuilder) super.forward(forward);
@@ -50,33 +78,5 @@ public class RelationBuilder extends BaseBuilder {
     BaseNode[] nodes = Arrays.stream(builders).map(BaseBuilder::build).toArray(BaseNode[]::new);
     ((BaseRelation) this.getNode()).getChildren().addAll(nodes);
     return this;
-  }
-
-  public RelationBuilder(BaseRelation relation) {
-    super(relation);
-  }
-
-  public RelationBuilder(RelationBuilder builder) {
-    super(builder.build());
-  }
-
-  public static RelationBuilder andRelation() {
-    return new RelationBuilder(new AndRelation());
-  }
-
-  public static RelationBuilder anyRelation() {
-    return new RelationBuilder(new AnyRelation());
-  }
-
-  public static RelationBuilder allRelation() {
-    return new RelationBuilder(new AllRelation());
-  }
-
-  public static RelationBuilder noneRelation() {
-    return new RelationBuilder(new NoneRelation());
-  }
-
-  public static RelationBuilder trueRelation() {
-    return new RelationBuilder(new TrueRelation());
   }
 }

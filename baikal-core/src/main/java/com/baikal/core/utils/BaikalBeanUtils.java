@@ -7,10 +7,10 @@ package com.baikal.core.utils;
  */
 public final class BaikalBeanUtils {
 
+  private static BaikalBeanFactory factory;
+
   private BaikalBeanUtils() {
   }
-
-  private static BaikalBeanFactory factory;
 
   public static void autowireBean(Object existingBean) {
     factory.autowireBean(existingBean);
@@ -23,6 +23,13 @@ public final class BaikalBeanUtils {
     return factory.containsBean(name);
   }
 
+  public static Object getBean(String name) {
+    if (factory == null) {
+      return null;
+    }
+    return factory.getBean(name);
+  }
+
   public static void setFactory(BaikalBeanFactory factory) {
     BaikalBeanUtils.factory = factory;
   }
@@ -31,16 +38,24 @@ public final class BaikalBeanUtils {
     /**
      * 注入Bean
      *
-     * @param existingBean
+     * @param existingBean 待填充对象
      */
     void autowireBean(Object existingBean);
 
     /**
      * 检查是否有此Bean
      *
-     * @param name
+     * @param name beanName
      * @return
      */
     boolean containsBean(String name);
+
+    /**
+     * 根据名称获取bean
+     *
+     * @param name beanName
+     * @return
+     */
+    Object getBean(String name);
   }
 }

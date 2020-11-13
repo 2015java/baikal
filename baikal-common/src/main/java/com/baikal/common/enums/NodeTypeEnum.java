@@ -41,16 +41,6 @@ public enum NodeTypeEnum {
    */
   LEAF_NONE((byte) 7);
 
-  private final byte type;
-
-  NodeTypeEnum(byte type) {
-    this.type = type;
-  }
-
-  public byte getType() {
-    return type;
-  }
-
   private static final Map<Byte, NodeTypeEnum> MAP = new HashMap<>();
 
   static {
@@ -59,7 +49,17 @@ public enum NodeTypeEnum {
     }
   }
 
+  private final byte type;
+
+  NodeTypeEnum(byte type) {
+    this.type = type;
+  }
+
   public static NodeTypeEnum getEnum(byte type) {
     return MAP.get(type);
+  }
+
+  public byte getType() {
+    return type;
   }
 }

@@ -56,19 +56,6 @@ public final class BaikalPack {
    */
   private byte debug;
 
-  public BaikalPack newPack(BaikalRoam roam) {
-    BaikalPack pack = new BaikalPack(traceId, requestTime);
-    pack.setBaikalId(baikalId);
-    pack.setScene(scene);
-    if (roam != null) {
-      /*此处没有用深拷贝*/
-      pack.setRoam(new BaikalRoam(roam));
-    }
-    pack.setType(type);
-    pack.setPriority(priority);
-    return pack;
-  }
-
   public BaikalPack() {
     this.setTraceId(UUIDUtils.generateMost22UUID());
     this.requestTime = System.currentTimeMillis();
@@ -106,5 +93,18 @@ public final class BaikalPack {
       this.traceId = traceId;
     }
     this.requestTime = System.currentTimeMillis();
+  }
+
+  public BaikalPack newPack(BaikalRoam roam) {
+    BaikalPack pack = new BaikalPack(traceId, requestTime);
+    pack.setBaikalId(baikalId);
+    pack.setScene(scene);
+    if (roam != null) {
+      /*此处没有用深拷贝*/
+      pack.setRoam(new BaikalRoam(roam));
+    }
+    pack.setType(type);
+    pack.setPriority(priority);
+    return pack;
   }
 }

@@ -22,6 +22,11 @@ public final class BaikalUpdateListener implements MessageListener {
 
   private List<Message> waitMessageList = new ArrayList<>();
 
+  public static void initEnd(long version) {
+    waitInit = false;
+    initVersion = version;
+  }
+
   @Override
   public void onMessage(Message message) {
     try {
@@ -61,10 +66,5 @@ public final class BaikalUpdateListener implements MessageListener {
     log.info("baikal listener update msg baikalStart baikalInfo:{}", json);
     BaikalUpdate.update(baikalInfo);
     log.info("baikal listener update msg baikalEnd success");
-  }
-
-  public static void initEnd(long version) {
-    waitInit = false;
-    initVersion = version;
   }
 }

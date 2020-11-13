@@ -22,11 +22,11 @@ public enum DebugEnum {
    */
   OUT_PACK;
 
+  private final byte mask;
+
   DebugEnum() {
     this.mask = (byte) (1 << ordinal());
   }
-
-  private final byte mask;
 
   public static boolean filter(DebugEnum debugEnum, byte debug) {
     return (debugEnum.mask & debug) != 0;

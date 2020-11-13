@@ -48,28 +48,12 @@ import java.util.stream.Collectors;
 @Service
 public class BaikalServerServiceImpl implements BaikalServerService, InitializingBean {
 
-  /**
-   * 上次更新时间
-   */
-  private Date lastUpdateTime;
-
   private static final Set<Integer> appSet = new HashSet<>();
   /**
    * 提前一天上线(提前上线避免延迟与方便检查)
    */
   private static final long FOWARD_MILLS = 86400000L;
-
-  private volatile long version;
-
   private static final Object LOCK = new Object();
-  @Resource
-  private BaikalBaseMapper baseMapper;
-
-  @Resource
-  private BaikalConfMapper confMapper;
-
-  @Resource
-  private AmqpTemplate amqpTemplate;
   /**
    * key:app value baseList
    */
@@ -78,7 +62,6 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
    * key:app value conf
    */
   private final Map<Integer, Map<Long, BaikalConf>> confWaitMap = new HashMap<>();
-
   /**
    * key:app value baseList
    */
@@ -87,8 +70,19 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
    * key:app value conf
    */
   private final Map<Integer, Map<Long, BaikalConf>> confActiveMap = new HashMap<>();
-
   private final Map<Integer, Map<Byte, Map<String, Integer>>> leafClassMap = new HashMap<>();
+  private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+  /**
+   * 上次更新时间
+   */
+  private Date lastUpdateTime;
+  private volatile long version;
+  @Resource
+  private BaikalBaseMapper baseMapper;
+  @Resource
+  private BaikalConfMapper confMapper;
+  @Resource
+  private AmqpTemplate amqpTemplate;
 
   @Override
   public Set<Integer> getAppSet() {
@@ -148,8 +142,6 @@ public class BaikalServerServiceImpl implements BaikalServerService, Initializin
   public void updateByEdit() {
     update();
   }
-
-  private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 
   /**
    * 定时任务,距上次执行完成10s后执行

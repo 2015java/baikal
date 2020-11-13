@@ -6,6 +6,8 @@ import com.baikal.core.leaf.base.BaseLeafNone;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  */
@@ -14,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public abstract class BaseLeafPackNone extends BaseLeafNone {
 
   @Override
-  protected void doNone(BaikalContext cxt) {
+  protected void doNone(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     doPackNone(cxt.getPack());
   }
 
@@ -24,5 +26,5 @@ public abstract class BaseLeafPackNone extends BaseLeafNone {
    * @param pack
    * @return
    */
-  protected abstract void doPackNone(BaikalPack pack);
+  protected abstract void doPackNone(BaikalPack pack) throws InvocationTargetException, IllegalAccessException;
 }

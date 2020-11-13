@@ -7,6 +7,8 @@ import com.baikal.core.utils.BaikalTimeUtils;
 import com.baikal.core.utils.ProcessUtils;
 import lombok.Data;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  * 基础Node
@@ -55,13 +57,15 @@ public abstract class BaseNode {
    */
   private boolean baikalTransaction;
 
+  private String baikalLogName;
+
   /**
    * process
    *
    * @param cxt 入参
    * @return true(f通过 r获得) false(f不通过 r丢失)
    */
-  public NodeRunStateEnum process(BaikalContext cxt) {
+  public NodeRunStateEnum process(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     cxt.setCurrentId(this.baikalNodeId);
     if (!BaikalTimeUtils.timeCheck(baikalTimeTypeEnum, cxt.getPack().getRequestTime(), baikalStart, baikalEnd)) {
       ProcessUtils.collectInfo(cxt.getProcessInfo(), this, 'O');
@@ -98,7 +102,7 @@ public abstract class BaseNode {
    * @param cxt 入参
    * @return 节点执行结果
    */
-  protected abstract NodeRunStateEnum processNode(BaikalContext cxt);
+  protected abstract NodeRunStateEnum processNode(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException;
 
   public Long getBaikalNodeId() {
     return baikalNodeId;

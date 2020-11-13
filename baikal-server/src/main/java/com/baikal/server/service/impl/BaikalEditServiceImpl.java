@@ -1,11 +1,6 @@
 package com.baikal.server.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.baikal.server.model.BaikalConfVo;
-import com.baikal.server.model.BaikalLeafClass;
-import com.baikal.server.model.PushData;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.page.PageMethod;
 import com.baikal.common.constant.Constant;
 import com.baikal.common.enums.NodeTypeEnum;
 import com.baikal.dao.mapper.BaikalBaseMapper;
@@ -18,9 +13,14 @@ import com.baikal.dao.model.BaikalConfExample;
 import com.baikal.dao.model.BaikalPushHistory;
 import com.baikal.dao.model.BaikalPushHistoryExample;
 import com.baikal.server.model.BaikalBaseVo;
+import com.baikal.server.model.BaikalConfVo;
+import com.baikal.server.model.BaikalLeafClass;
+import com.baikal.server.model.PushData;
 import com.baikal.server.model.WebResult;
 import com.baikal.server.service.BaikalEditService;
 import com.baikal.server.service.BaikalServerService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.page.PageMethod;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author kowalski
@@ -50,6 +56,16 @@ public class BaikalEditServiceImpl implements BaikalEditService {
 
   @Resource
   private AmqpTemplate amqpTemplate;
+
+  public static boolean isRelation(BaikalConfVo dto) {
+    return isRelation(dto.getNodeType());
+  }
+
+  public static boolean isRelation(Byte type) {
+    return type == NodeTypeEnum.NONE.getType() || type == NodeTypeEnum.ALL.getType()
+        || type == NodeTypeEnum.AND.getType() || type == NodeTypeEnum.TRUE.getType()
+        || type == NodeTypeEnum.ANY.getType();
+  }
 
   /**
    * get Base
@@ -299,16 +315,6 @@ public class BaikalEditServiceImpl implements BaikalEditService {
         return result;
     }
     return result;
-  }
-
-  public static boolean isRelation(BaikalConfVo dto) {
-    return isRelation(dto.getNodeType());
-  }
-
-  public static boolean isRelation(Byte type) {
-    return type == NodeTypeEnum.NONE.getType() || type == NodeTypeEnum.ALL.getType()
-        || type == NodeTypeEnum.AND.getType() || type == NodeTypeEnum.TRUE.getType()
-        || type == NodeTypeEnum.ANY.getType();
   }
 
   /**

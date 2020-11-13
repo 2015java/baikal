@@ -6,6 +6,8 @@ import com.baikal.core.context.BaikalContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  * Result 叶子节点
@@ -18,7 +20,7 @@ public abstract class BaseLeafResult extends BaseLeaf {
    * process leaf result
    */
   @Override
-  protected NodeRunStateEnum doLeaf(BaikalContext cxt) {
+  protected NodeRunStateEnum doLeaf(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     if (this.doResult(cxt)) {
       return NodeRunStateEnum.TRUE;
     }
@@ -31,5 +33,5 @@ public abstract class BaseLeafResult extends BaseLeaf {
    * @param cxt
    * @return
    */
-  protected abstract boolean doResult(BaikalContext cxt);
+  protected abstract boolean doResult(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException;
 }

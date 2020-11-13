@@ -44,7 +44,7 @@ public final class ProcessUtils {
           state = '?';
           break;
       }
-      sb.append('[').append(node.findBaikalNodeId()).append(':').append(node.getClass().getSimpleName()).append(':')
+      sb.append('[').append(node.findBaikalNodeId()).append(':').append(node.getBaikalLogName() == null ? node.getClass().getSimpleName() : node.getBaikalLogName()).append(':')
           .append(state).append(node.isBaikalInverse() ? "-INV:" : ':').append(System.currentTimeMillis() - start)
           .append(']');
     }
@@ -63,7 +63,7 @@ public final class ProcessUtils {
    */
   public static void collectInfo(StringBuilder sb, BaseNode node, char state) {
     if (node.isBaikalNodeDebug()) {
-      sb.append('[').append(node.findBaikalNodeId()).append(':').append(node.getClass().getSimpleName()).append(':')
+      sb.append('[').append(node.findBaikalNodeId()).append(':').append(node.getBaikalLogName() == null ? node.getClass().getSimpleName() : node.getBaikalLogName()).append(':')
           .append(state).append(']');
     }
   }
@@ -76,7 +76,7 @@ public final class ProcessUtils {
    */
   public static void collectRejectInfo(StringBuilder sb, BaseNode node) {
     if (node.isBaikalNodeDebug()) {
-      sb.append('[').append(node.findBaikalNodeId()).append(':').append(node.getClass().getSimpleName()).append(':')
+      sb.append('[').append(node.findBaikalNodeId()).append(':').append(node.getBaikalLogName() == null ? node.getClass().getSimpleName() : node.getBaikalLogName()).append(':')
           .append("R-F").append(']');
     }
   }

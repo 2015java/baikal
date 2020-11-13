@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 public class TestConfig {
 
   @Bean
-  public BaikalBeanUtils.BaikalBeanFactory baikalBeanFactory(){
+  public BaikalBeanUtils.BaikalBeanFactory baikalBeanFactory() {
     return new BaikalSpringBeanFactory();
   }
 

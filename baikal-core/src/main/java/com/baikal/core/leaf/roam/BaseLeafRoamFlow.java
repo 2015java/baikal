@@ -6,6 +6,8 @@ import com.baikal.core.leaf.base.BaseLeafFlow;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  */
@@ -14,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public abstract class BaseLeafRoamFlow extends BaseLeafFlow {
 
   @Override
-  protected boolean doFlow(BaikalContext cxt) {
+  protected boolean doFlow(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     return doRoamFlow(cxt.getPack().getRoam());
   }
 
@@ -24,5 +26,5 @@ public abstract class BaseLeafRoamFlow extends BaseLeafFlow {
    * @param roam
    * @return
    */
-  protected abstract boolean doRoamFlow(BaikalRoam roam);
+  protected abstract boolean doRoamFlow(BaikalRoam roam) throws InvocationTargetException, IllegalAccessException;
 }

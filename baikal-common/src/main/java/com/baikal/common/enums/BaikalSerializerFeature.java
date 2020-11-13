@@ -14,11 +14,11 @@ public enum BaikalSerializerFeature {
    */
   LAST_REMAIN(1073741824);
 
+  private final int mask;
+
   BaikalSerializerFeature(int mask) {
     this.mask = mask;
   }
-
-  private final int mask;
 
   public final int getMask() {
     return mask;

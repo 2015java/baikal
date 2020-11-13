@@ -1,9 +1,9 @@
 package com.baikal.core.builder;
 
 import com.baikal.common.enums.TimeTypeEnum;
-import com.baikal.core.handler.BaikalHandler;
 import com.baikal.core.base.BaseNode;
 import com.baikal.core.cache.BaikalHandlerCache;
+import com.baikal.core.handler.BaikalHandler;
 import lombok.Data;
 
 import java.util.Arrays;
@@ -17,6 +17,13 @@ import java.util.Set;
 public class BaikalBuilder {
 
   private BaikalHandler handler;
+
+  public BaikalBuilder(BaseNode root) {
+    this.handler = new BaikalHandler();
+    this.handler.setScenes(new HashSet<>());
+    this.handler.setTimeTypeEnum(TimeTypeEnum.NONE);
+    this.handler.setRoot(root);
+  }
 
   public static BaikalBuilder root(BaseNode root) {
     return new BaikalBuilder(root);
@@ -62,12 +69,5 @@ public class BaikalBuilder {
   public void register(String... scene) {
     this.scene(scene);
     BaikalHandlerCache.onlineOrUpdateHandler(this.handler);
-  }
-
-  public BaikalBuilder(BaseNode root) {
-    this.handler = new BaikalHandler();
-    this.handler.setScenes(new HashSet<>());
-    this.handler.setTimeTypeEnum(TimeTypeEnum.NONE);
-    this.handler.setRoot(root);
   }
 }

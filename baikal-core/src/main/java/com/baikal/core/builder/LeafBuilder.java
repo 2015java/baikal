@@ -10,6 +10,13 @@ import com.baikal.core.base.BaseNode;
  */
 public class LeafBuilder extends BaseBuilder {
 
+  public LeafBuilder(BaseLeaf leaf) {
+    super(leaf);
+    if (leaf.getBaikalErrorHandleEnum() == null) {
+      leaf.setBaikalErrorHandleEnum(ErrorHandleEnum.SHUT_DOWN);
+    }
+  }
+
   public static LeafBuilder leaf(BaseLeaf leaf) {
     return new LeafBuilder(leaf);
   }
@@ -42,12 +49,5 @@ public class LeafBuilder extends BaseBuilder {
   public LeafBuilder errorHandle(ErrorHandleEnum handleEnum) {
     ((BaseLeaf) this.getNode()).setBaikalErrorHandleEnum(handleEnum);
     return this;
-  }
-
-  public LeafBuilder(BaseLeaf leaf) {
-    super(leaf);
-    if (leaf.getBaikalErrorHandleEnum() == null) {
-      leaf.setBaikalErrorHandleEnum(ErrorHandleEnum.SHUT_DOWN);
-    }
   }
 }

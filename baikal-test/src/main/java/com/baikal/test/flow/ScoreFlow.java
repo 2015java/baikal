@@ -26,7 +26,7 @@ public class ScoreFlow extends BaseLeafRoamFlow {
   @Override
   protected boolean doRoamFlow(BaikalRoam roam) {
     Object value = roam.getMulti(key);
-    if(value == null){
+    if (value == null) {
       return false;
     }
     double valueScore = Double.parseDouble(value.toString());

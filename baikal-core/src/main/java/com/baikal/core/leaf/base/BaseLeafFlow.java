@@ -6,6 +6,8 @@ import com.baikal.core.context.BaikalContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  * Flow 叶子节点
@@ -18,7 +20,7 @@ public abstract class BaseLeafFlow extends BaseLeaf {
    * process leaf flow
    */
   @Override
-  protected NodeRunStateEnum doLeaf(BaikalContext cxt) {
+  protected NodeRunStateEnum doLeaf(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     if (doFlow(cxt)) {
       return NodeRunStateEnum.TRUE;
     }
@@ -31,5 +33,5 @@ public abstract class BaseLeafFlow extends BaseLeaf {
    * @param cxt
    * @return
    */
-  protected abstract boolean doFlow(BaikalContext cxt);
+  protected abstract boolean doFlow(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException;
 }

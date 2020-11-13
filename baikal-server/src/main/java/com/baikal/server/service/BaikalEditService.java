@@ -1,7 +1,7 @@
 package com.baikal.server.service;
 
-import com.baikal.server.model.BaikalConfVo;
 import com.baikal.server.model.BaikalBaseVo;
+import com.baikal.server.model.BaikalConfVo;
 import com.baikal.server.model.WebResult;
 
 /**

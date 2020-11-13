@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author kowalski
  */
@@ -27,7 +29,7 @@ public abstract class BaseLeaf extends BaseNode {
    * @return 节点执行结果
    */
   @Override
-  protected NodeRunStateEnum processNode(BaikalContext cxt) {
+  protected NodeRunStateEnum processNode(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
     try {
       return doLeaf(cxt);
     } catch (Exception e) {
@@ -70,5 +72,5 @@ public abstract class BaseLeaf extends BaseNode {
    * @param cxt
    * @return
    */
-  protected abstract NodeRunStateEnum doLeaf(BaikalContext cxt);
+  protected abstract NodeRunStateEnum doLeaf(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException;
 }

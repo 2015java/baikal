@@ -30,7 +30,7 @@ public final class TimeChangeNone extends BaseLeafPackNone {
    */
   @Override
   protected void doPackNone(BaikalPack pack) {
-    if(!"product".equals(environment)) {
+    if (!"product".equals(environment)) {
       if (time != null) {
         pack.setRequestTime(time.getTime());
       } else {

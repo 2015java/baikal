@@ -37,18 +37,6 @@ public final class BaikalLinkedList<E> {
     return first;
   }
 
-  public static class Node<E> {
-    public E item;
-    public Node<E> next;
-    public Node<E> prev;
-
-    public Node(Node<E> prev, E element, Node<E> next) {
-      this.item = element;
-      this.next = next;
-      this.prev = prev;
-    }
-  }
-
   public boolean add(E e) {
     linkLast(e);
     return true;
@@ -154,5 +142,17 @@ public final class BaikalLinkedList<E> {
 
     size--;
     return element;
+  }
+
+  public static class Node<E> {
+    public E item;
+    public Node<E> next;
+    public Node<E> prev;
+
+    public Node(Node<E> prev, E element, Node<E> next) {
+      this.item = element;
+      this.next = next;
+      this.prev = prev;
+    }
   }
 }

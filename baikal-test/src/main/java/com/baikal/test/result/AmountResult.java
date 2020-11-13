@@ -5,6 +5,7 @@ import com.baikal.core.leaf.roam.BaseLeafRoamResult;
 import com.baikal.test.service.SendService;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import javax.annotation.Resource;
 
 @Data

@@ -35,16 +35,6 @@ public enum ErrorHandleEnum {
    */
   SHUT_DOWN_STORE((byte) 4);
 
-  private final byte type;
-
-  ErrorHandleEnum(byte type) {
-    this.type = type;
-  }
-
-  public byte getType() {
-    return type;
-  }
-
   private static final Map<Byte, ErrorHandleEnum> MAP = new HashMap<>();
 
   static {
@@ -53,7 +43,17 @@ public enum ErrorHandleEnum {
     }
   }
 
+  private final byte type;
+
+  ErrorHandleEnum(byte type) {
+    this.type = type;
+  }
+
   public static ErrorHandleEnum getEnum(byte type) {
     return MAP.get(type);
+  }
+
+  public byte getType() {
+    return type;
   }
 }
