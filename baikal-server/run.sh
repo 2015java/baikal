@@ -15,58 +15,56 @@ EXEC_COMMAND="${JAVA_HOME}/bin/java $JAVA_OPTS -jar ${currentdir}/baikal-server.
 pidfile='/tmp/baikal-server'
 
 usage() {
-   echo "$0 start|stop|restart"
-   exit 1
+  echo "$0 start|stop|restart"
+  exit 1
 }
 
 [ $# -ne 1 ] && usage
 
 start() {
-    if [ -f $pidfile ]
-      then
-         echo $pid
-         echo 'baikal-server has already started.'
-         exit 1
-    fi
-    if [ -f ${currentdir}/baikal-server.jar ]
-    then
-        echo 'start baikal-server'
-        nohup $EXEC_COMMAND > /var/log/baikal-server/service-start.log 2>&1 &
-        echo 'end of start baikal-server'
-    else
-      echo 'baikal-server.jar not exists!'
-    fi
-    RETVAL=$?
-    echo
-    return $RETVAL
+  if [ -f $pidfile ]; then
+    echo $pid
+    echo 'baikal-server has already started.'
+    exit 1
+  fi
+  if [ -f ${currentdir}/baikal-server.jar ]; then
+    echo 'start baikal-server'
+    nohup $EXEC_COMMAND >/var/log/baikal-server/service-start.log 2>&1 &
+    echo 'end of start baikal-server'
+  else
+    echo 'baikal-server.jar not exists!'
+  fi
+  RETVAL=$?
+  echo
+  return $RETVAL
 }
 
 stop() {
-    pid=`ps -ef | grep baikal-server.jar | grep -v grep | awk '{print $2}'`
-    echo "stopping..."
-    kill -9 $pid || failure
-    echo "done"
-    RETVAL=$?
-    echo
-    return $RETVAL
+  pid=$(ps -ef | grep baikal-server.jar | grep -v grep | awk '{print $2}')
+  echo "stopping..."
+  kill -9 $pid || failure
+  echo "done"
+  RETVAL=$?
+  echo
+  return $RETVAL
 }
 
 restart() {
-    stop
-    start
+  stop
+  start
 }
 
 case $1 in
-    start)
-    start
-    ;;
-    stop)
-    stop
-    ;;
-    restart)
-    restart
-    ;;
-    *)
-    usage
-    ;;
+start)
+  start
+  ;;
+stop)
+  stop
+  ;;
+restart)
+  restart
+  ;;
+*)
+  usage
+  ;;
 esac

@@ -6,19 +6,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER})
-public @interface BaikalParam {
+@Target({ElementType.METHOD})
+public @interface BaikalRes {
   /**
-   * 除以下value字段外指定从BaikalRoam拿value字段作为方法入参
-   * "time":requestTime
-   * "roam":BaikalRoam
-   * "pack":BaikalPack
-   * "cxt":BaikalContext
+   * 方法执行结果以value命名放入BaikalRoam
    *
-   * @return paramName
+   * @return resName
    */
   String value();
 }
