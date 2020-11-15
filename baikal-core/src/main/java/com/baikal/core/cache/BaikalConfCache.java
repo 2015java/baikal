@@ -254,14 +254,15 @@ public final class BaikalConfCache {
   }
 
   private static BaseNode convert(BaikalConfDto confDto) throws ClassNotFoundException, NoSuchMethodException {
+    BaseNode node;
     switch (NodeTypeEnum.getEnum(confDto.getType())) {
       case LEAF_FLOW:
-        BaseLeafFlow flow;
-        String flowFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField();
+        String flowFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField();
         String flowConfNameFirst = confDto.getConfName().substring(0, 1);
         if (flowConfNameFirst.equals("#") || flowConfNameFirst.equals("$")) {
           final BaikalProxy proxy = getProxy(flowConfNameFirst, confDto);
-          flow = new BaseLeafFlow() {
+          node = new BaseLeafFlow() {
             @Override
             protected boolean doFlow(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
               BaikalPack pack = cxt.getPack();
@@ -280,26 +281,20 @@ public final class BaikalConfCache {
               return true;
             }
           };
-          flow.setBaikalLogName(proxy.logName);
+          node.setBaikalLogName(proxy.logName);
         } else {
-          flow = (BaseLeafFlow) JSON.parseObject(flowFiled, Class.forName(confDto.getConfName()));
-          flow.setBaikalLogName(flow.getClass().getSimpleName());
-          BaikalBeanUtils.autowireBean(flow);
+          node = (BaseLeafFlow) JSON.parseObject(flowFiled, Class.forName(confDto.getConfName()));
+          node.setBaikalLogName(node.getClass().getSimpleName());
+          BaikalBeanUtils.autowireBean(node);
         }
-        flow.setBaikalNodeId(confDto.getId());
-        flow.setBaikalNodeDebug(confDto.getDebug() == 1);
-        flow.setBaikalInverse(confDto.getInverse() == 1);
-        flow.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        flow.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        flow.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return flow;
+        break;
       case LEAF_RESULT:
-        BaseLeafResult result;
-        String resultFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField();
+        String resultFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField();
         String resultConfNameFirst = confDto.getConfName().substring(0, 1);
         if (resultConfNameFirst.equals("#") || resultConfNameFirst.equals("$")) {
           final BaikalProxy proxy = getProxy(resultConfNameFirst, confDto);
-          result = new BaseLeafResult() {
+          node = new BaseLeafResult() {
             @Override
             protected boolean doResult(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
               BaikalPack pack = cxt.getPack();
@@ -318,26 +313,20 @@ public final class BaikalConfCache {
               return true;
             }
           };
-          result.setBaikalLogName(proxy.logName);
+          node.setBaikalLogName(proxy.logName);
         } else {
-          result = (BaseLeafResult) JSON.parseObject(resultFiled, Class.forName(confDto.getConfName()));
-          result.setBaikalLogName(result.getClass().getSimpleName());
-          BaikalBeanUtils.autowireBean(result);
+          node = (BaseLeafResult) JSON.parseObject(resultFiled, Class.forName(confDto.getConfName()));
+          node.setBaikalLogName(node.getClass().getSimpleName());
+          BaikalBeanUtils.autowireBean(node);
         }
-        result.setBaikalNodeId(confDto.getId());
-        result.setBaikalNodeDebug(confDto.getDebug() == 1);
-        result.setBaikalInverse(confDto.getInverse() == 1);
-        result.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        result.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        result.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return result;
+        break;
       case LEAF_NONE:
-        BaseLeafNone none;
-        String noneFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField();
+        String noneFiled = confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField();
         String noneConfNameFirst = confDto.getConfName().substring(0, 1);
         if (noneConfNameFirst.equals("#") || noneConfNameFirst.equals("$")) {
           final BaikalProxy proxy = getProxy(noneConfNameFirst, confDto);
-          none = new BaseLeafNone() {
+          node = new BaseLeafNone() {
             @Override
             protected void doNone(BaikalContext cxt) throws InvocationTargetException, IllegalAccessException {
               BaikalPack pack = cxt.getPack();
@@ -350,90 +339,52 @@ public final class BaikalConfCache {
               method.invoke(proxy.instance, params);
             }
           };
-          none.setBaikalLogName(proxy.logName);
+          node.setBaikalLogName(proxy.logName);
         } else {
-          none = (BaseLeafNone) JSON.parseObject(noneFiled, Class.forName(confDto.getConfName()));
-          none.setBaikalLogName(none.getClass().getSimpleName());
-          BaikalBeanUtils.autowireBean(none);
+          node = (BaseLeafNone) JSON.parseObject(noneFiled, Class.forName(confDto.getConfName()));
+          node.setBaikalLogName(node.getClass().getSimpleName());
+          BaikalBeanUtils.autowireBean(node);
         }
-        none.setBaikalNodeId(confDto.getId());
-        none.setBaikalNodeDebug(confDto.getDebug() == 1);
-        none.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        none.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        none.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return none;
+        break;
       case NONE:
-        NoneRelation noneRelation = JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            NoneRelation.class);
-        noneRelation.setBaikalLogName("None");
-        noneRelation.setBaikalNodeId(confDto.getId());
-        noneRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
-        noneRelation.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        noneRelation.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        noneRelation.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return noneRelation;
+        node = JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField(), NoneRelation.class);
+        node.setBaikalLogName("None");
+        break;
       case AND:
-        AndRelation andRelation = JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            AndRelation.class);
-        andRelation.setBaikalLogName("And");
-        andRelation.setBaikalNodeId(confDto.getId());
-        andRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
-        andRelation.setBaikalInverse(confDto.getInverse() == 1);
-        andRelation.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        andRelation.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        andRelation.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return andRelation;
+        node = JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField(), AndRelation.class);
+        node.setBaikalLogName("And");
+        break;
       case TRUE:
-        TrueRelation trueRelation = JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            TrueRelation.class);
-        trueRelation.setBaikalLogName("True");
-        trueRelation.setBaikalNodeId(confDto.getId());
-        trueRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
-        trueRelation.setBaikalInverse(confDto.getInverse() == 1);
-        trueRelation.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        trueRelation.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        trueRelation.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return trueRelation;
+        node = JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField(), TrueRelation.class);
+        node.setBaikalLogName("True");
+        break;
       case ALL:
-        AllRelation allRelation = JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            AllRelation.class);
-        allRelation.setBaikalLogName("All");
-        allRelation.setBaikalNodeId(confDto.getId());
-        allRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
-        allRelation.setBaikalInverse(confDto.getInverse() == 1);
-        allRelation.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        allRelation.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        allRelation.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return allRelation;
+        node = JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField(), AllRelation.class);
+        node.setBaikalLogName("All");
+        break;
       case ANY:
-        AnyRelation anyRelation = JSON.parseObject(
-            confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            AnyRelation.class);
-        anyRelation.setBaikalLogName("Any");
-        anyRelation.setBaikalNodeId(confDto.getId());
-        anyRelation.setBaikalNodeDebug(confDto.getDebug() == 1);
-        anyRelation.setBaikalInverse(confDto.getInverse() == 1);
-        anyRelation.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        anyRelation.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        anyRelation.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        return anyRelation;
+        node = JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField(), AnyRelation.class);
+        node.setBaikalLogName("Any");
+        break;
       default:
-        BaseNode baseNode = (BaseNode) JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" : confDto.getConfField(),
-            Class.forName(confDto.getConfName()));
-        baseNode.setBaikalLogName(baseNode.getClass().getSimpleName());
-        baseNode.setBaikalNodeId(confDto.getId());
-        baseNode.setBaikalNodeDebug(confDto.getDebug() == 1);
-        baseNode.setBaikalInverse(confDto.getInverse() == 1);
-        baseNode.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
-        baseNode.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
-        baseNode.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
-        BaikalBeanUtils.autowireBean(baseNode);
-        return baseNode;
+        node = (BaseNode) JSON.parseObject(confDto.getConfField() == null || confDto.getConfField().isEmpty() ? "{}" :
+            confDto.getConfField(), Class.forName(confDto.getConfName()));
+        node.setBaikalLogName(node.getClass().getSimpleName());
+        BaikalBeanUtils.autowireBean(node);
+        break;
     }
+    node.setBaikalNodeId(confDto.getId());
+    node.setBaikalNodeDebug(confDto.getDebug() == 1);
+    node.setBaikalInverse(confDto.getInverse() == 1);
+    node.setBaikalTimeTypeEnum(TimeTypeEnum.getEnum(confDto.getTimeType()));
+    node.setBaikalStart(confDto.getStart() == null ? 0 : confDto.getStart());
+    node.setBaikalEnd(confDto.getEnd() == null ? 0 : confDto.getEnd());
+    return node;
   }
 
   private static Object toArray(Object input, Class<?> type) {
@@ -443,13 +394,10 @@ public final class BaikalConfCache {
     Collection<?> collection = (Collection<?>) input;
     if (!type.getComponentType().isPrimitive()) {
       if (collection == null) {
-        return (type == Object[].class)
-            ? new Object[0]
-            : Array.newInstance(type.getComponentType(), 0);
+        return (type == Object[].class) ? new Object[0] : Array.newInstance(type.getComponentType(), 0);
       }
-      Object copy = (type == Object[].class)
-          ? new Object[collection.size()]
-          : Array.newInstance(type.getComponentType(), collection.size());
+      Object copy = (type == Object[].class) ? new Object[collection.size()] :
+          Array.newInstance(type.getComponentType(), collection.size());
       collection.toArray((Object[]) copy);
       return copy;
     }
@@ -519,7 +467,6 @@ public final class BaikalConfCache {
       }
       return res;
     }
-
     if (type == short[].class) {
       if (collection == null) {
         return new short[0];
@@ -545,7 +492,8 @@ public final class BaikalConfCache {
     return null;
   }
 
-  private static BaikalProxy getProxy(String nameFirst, BaikalConfDto confDto) throws ClassNotFoundException, NoSuchMethodException {
+  private static BaikalProxy getProxy(String nameFirst, BaikalConfDto confDto)
+      throws ClassNotFoundException, NoSuchMethodException {
     String instanceClzName;
     Class<?> instanceClz;
     Object instance = null;
