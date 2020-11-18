@@ -90,7 +90,7 @@ public final class BaikalTimeUtils {
         return true;
       case BETWEEN:
       case TEST_BETWEEN:
-        if (requestTime >= start && requestTime <= end) {
+        if (requestTime >= start && requestTime < end) {
           return true;
         }
         return false;
